@@ -3,14 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pabean & Pajak Impor Indonesia</title>
+    <title>Portal Informasi Kepabeanan Indonesia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f9fafb;
+            background-image: linear-gradient(rgba(249, 250, 251, 0.97), rgba(249, 250, 251, 0.97)), url('https://images.unsplash.com/photo-1613622493213-b82c0d8376d9?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .nav-link.active {
+            background-color: #2563EB;
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #EFF6FF;
+            color: #1D4ED8;
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
         }
         .section-card {
             background-color: white;
@@ -19,266 +43,268 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             margin-bottom: 1.5rem;
         }
-        .input-group {
-            margin-bottom: 1rem;
-        }
         .input-field {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #D1D5DB;
-            border-radius: 0.5rem;
-            transition: border-color 0.2s;
-            text-align: right;
+            width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.5rem; transition: border-color 0.2s; text-align: right;
         }
         .input-field:focus {
-            outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+            outline: none; border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
         }
         .input-field:disabled {
-            background-color: #F3F4F6;
-            cursor: not-allowed;
+            background-color: #F3F4F6; cursor: not-allowed;
         }
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; display: inline-flex; align-items: center; justify-content: center;
         }
-        .btn-primary {
-            background-color: #2563EB;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #1D4ED8;
-        }
-        .btn-secondary {
-            background-color: #6B7280;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #4B5563;
-        }
-        .btn-danger {
-            background-color: #EF4444;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #DC2626;
-        }
-        .btn-export {
-            background-color: #16A34A;
-            color: white;
-        }
-        .btn-export:hover {
-            background-color: #15803D;
-        }
+        .btn-primary { background-color: #2563EB; color: white; }
+        .btn-primary:hover { background-color: #1D4ED8; }
+        .btn-secondary { background-color: #6B7280; color: white; }
+        .btn-secondary:hover { background-color: #4B5563; }
+        .btn-danger { background-color: #EF4444; color: white; }
+        .btn-danger:hover { background-color: #DC2626; }
+        .btn-export { background-color: #16A34A; color: white; }
+        .btn-export:hover { background-color: #15803D; }
         .result-display {
-            background-color: #F3F4F6;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1F2937;
+            background-color: #F3F4F6; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; font-size: 1.125rem; font-weight: 600; color: #1F2937;
         }
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 1rem;
+        h1 { font-size: 2.25rem; }
+        @media (min-width: 768px) {
+            h1 { font-size: 2.5rem; }
         }
-        h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1F2937;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #E5E7EB;
-            padding-bottom: 0.5rem;
-        }
-        table {
-            width: 100%;
-            margin-top: 1rem;
-            border-collapse: collapse;
-        }
-        th, td {
-            text-align: left;
-            padding: 0.75rem;
-            border-bottom: 1px solid #E5E7EB;
-            vertical-align: middle;
-        }
-        thead th {
-            background-color: #F9FAFB;
-            font-weight: 600;
-            color: #374151;
-        }
-        tfoot td {
-            font-weight: 700;
-            background-color: #F3F4F6;
-        }
-        .text-right {
-            text-align: right;
+        h2 { font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 1rem; }
+        h3 { font-size: 1.25rem; font-weight: 600; color: #1F2937; margin-bottom: 1rem; border-bottom: 2px solid #E5E7EB; padding-bottom: 0.5rem; }
+        table { width: 100%; margin-top: 1rem; border-collapse: collapse; }
+        th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #E5E7EB; vertical-align: middle; }
+        thead th { background-color: #F9FAFB; font-weight: 600; color: #374151; }
+        tfoot td { font-weight: 700; background-color: #F3F4F6; }
+        .text-right { text-align: right; }
+        details > summary {
+            cursor: pointer;
+            font-weight: 500;
+            color: #3B82F6;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100">
 
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
 
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800">Kalkulator Kepabeanan Indonesia</h1>
-            <p class="text-lg text-gray-600 mt-2">Simulasi Perhitungan PIB, PDRI, dan Sanksi Administrasi</p>
+            <h1 class="font-bold text-gray-800">Portal Informasi Kepabeanan Indonesia</h1>
         </header>
 
-        <!-- Main Calculator -->
-        <div class="section-card">
-            <h2>Kalkulator Cepat PIB (Multi-Item)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 border-b pb-6 mb-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1" for="pib-number">Nomor PIB</label>
-                    <input type="text" id="pib-number" class="input-field !text-left" placeholder="000123-20250725-123456">
+        <!-- Navigation -->
+        <nav class="bg-white rounded-lg shadow p-2 mb-8 flex flex-wrap gap-2 justify-center">
+            <a class="nav-link active" onclick="showPage('kalkulator')">Kalkulator</a>
+            <a class="nav-link" onclick="showPage('kuota-impor')">Kuota Impor</a>
+            <a class="nav-link" onclick="showPage('fasilitas')">Analisis Fasilitas</a>
+            <a class="nav-link" onclick="showPage('studi-kasus')">Studi Kasus</a>
+            <a class="nav-link" onclick="showPage('peraturan')">Pusat Peraturan</a>
+            <a class="nav-link" onclick="showPage('glosarium')">Glosarium</a>
+        </nav>
+
+        <!-- Page Content -->
+        <main>
+            <!-- Kalkulator Page -->
+            <div id="kalkulator" class="page-content active">
+                <!-- Main Calculator -->
+                <div class="section-card">
+                    <h2>Kalkulator PIB (Termasuk Bea Masuk Anti Dumping)</h2>
+                    <details class="mb-4 bg-blue-50 p-4 rounded-lg">
+                        <summary>Tampilkan Petunjuk Pengisian</summary>
+                        <div class="mt-2 text-sm text-gray-700 space-y-2">
+                            <p><strong>Total Insurance:</strong> Masukkan total biaya asuransi pengiriman barang dari luar negeri.</p>
+                            <p><strong>Total Freight:</strong> Masukkan total biaya pengangkutan/pengiriman barang (ongkos kirim).</p>
+                            <p><strong>Total Royalty & Lisensi:</strong> Biaya yang harus dibayar sebagai syarat penjualan barang impor (jika ada).</p>
+                            <p><strong>Total Garansi:</strong> Biaya penggantian atau perbaikan yang ditanggung pembeli (jika ada).</p>
+                            <p><strong>Total Diskon:</strong> Potongan harga yang didapat dari total nilai barang.</p>
+                            <p><strong>Cost Barang:</strong> Masukkan harga per-item/per-jenis barang sesuai invoice.</p>
+                            <p><strong>Tarif BM & BMAD:</strong> Masukkan tarif Bea Masuk dan Bea Masuk Anti Dumping dalam persen (%). Isi 0 jika tidak ada.</p>
+                        </div>
+                    </details>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 border-b pb-6 mb-6">
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="pib-number">Nomor PIB</label><input type="text" id="pib-number" class="input-field !text-left" placeholder="000123-20250725-123456"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-insurance">Total Insurance (Rp)</label><input type="text" id="main-insurance" class="input-field number-input" placeholder="150.000"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-freight">Total Freight (Rp)</label><input type="text" id="main-freight" class="input-field number-input" placeholder="1.500.000"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-royalty">Total Royalty & Lisensi (Rp)</label><input type="text" id="main-royalty" class="input-field number-input" placeholder="0"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-warranty">Total Garansi (Rp)</label><input type="text" id="main-warranty" class="input-field number-input" placeholder="0"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-discount">Total Diskon (Rp)</label><input type="text" id="main-discount" class="input-field number-input" placeholder="0"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-pph-tarif">Tarif PPh Ps. 22</label><select id="main-pph-tarif" class="input-field !text-left"><option value="0.025">2,5% (Dengan API)</option><option value="0.075">7,5% (Tanpa API)</option><option value="0.1">10% (Tertentu)</option><option value="0.005">0,5% (Tertentu)</option></select></div>
+                    </div>
+                    <div class="overflow-x-auto"><table id="pib-table"><thead><tr><th>Serial</th><th>Cost Barang (Rp)</th><th>Tarif BM (%)</th><th>Tarif BMAD (%)</th><th>Aksi</th></tr></thead><tbody id="items-container"></tbody></table></div>
+                    <button id="add-item-btn" class="btn btn-primary mt-4">Tambah Barang</button><hr class="my-6"><div class="flex flex-wrap gap-4"><button onclick="calculateMain()" class="btn btn-primary text-lg">Hitung & Detailkan PIB</button><button onclick="resetMain()" class="btn btn-secondary">Reset</button></div>
+                    <div id="pib-results-detail" class="mt-4 hidden"><h3 class="text-lg font-semibold mb-2">Detail Perhitungan PIB</h3><div class="overflow-x-auto"><table id="pib-results-table"><thead><tr><th>Serial</th><th class="text-right">Nilai Pabean</th><th class="text-right">Bea Masuk</th><th class="text-right">BM Anti Dumping</th><th class="text-right">Nilai Impor</th><th class="text-right">PPN</th><th class="text-right">PPh 22</th></tr></thead><tbody id="pib-results-body"></tbody><tfoot id="pib-results-foot"></tfoot></table></div><div class="flex flex-wrap gap-4 mt-4"><button onclick="exportPIB('xlsx')" class="btn btn-export">Export ke Excel</button><button onclick="exportPIB('csv')" class="btn btn-export">Export ke CSV (Sheets)</button></div></div>
+                    <div id="pib-calculation-explanation" class="mt-6 hidden bg-gray-50 p-4 rounded-lg"></div>
                 </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-insurance">Total Insurance (Rp)</label><input type="text" id="main-insurance" class="input-field number-input" placeholder="150.000"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-freight">Total Freight (Rp)</label><input type="text" id="main-freight" class="input-field number-input" placeholder="1.500.000"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-royalty">Total Royalty & Lisensi (Rp)</label><input type="text" id="main-royalty" class="input-field number-input" placeholder="0"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-warranty">Total Garansi (Rp)</label><input type="text" id="main-warranty" class="input-field number-input" placeholder="0"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1" for="main-discount">Total Diskon (Rp)</label><input type="text" id="main-discount" class="input-field number-input" placeholder="0"></div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1" for="main-pph-tarif">Tarif PPh Ps. 22</label>
-                    <select id="main-pph-tarif" class="input-field !text-left">
-                        <option value="0.025">2,5% (Dengan API)</option>
-                        <option value="0.075">7,5% (Tanpa API)</option>
-                        <option value="0.1">10% (Tertentu)</option>
-                        <option value="0.005">0,5% (Tertentu)</option>
-                    </select>
+                <!-- Sanctions Calculator -->
+                <div class="section-card"><h2>Kalkulator Sanksi Administrasi</h2><div id="sanksi-placeholder" class="text-center p-8 bg-gray-100 rounded-lg"><p class="text-gray-600 font-medium">Lengkapi dan hitung detail PIB di atas terlebih dahulu untuk mengaktifkan kalkulator sanksi.</p></div><div id="sanksi-content" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-x-6"><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-pelanggaran">Jenis Kesalahan</label><select id="sanksi-jenis-pelanggaran" class="input-field !text-left" onchange="toggleSanksiInput()"><option value="nilai_pabean" selected>Kesalahan Nilai Pabean</option><option value="tarif">Kesalahan Tarif</option></select></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-importir">Jenis Importir</label><select id="sanksi-jenis-importir" class="input-field !text-left"><option value="umum" selected>Importir Umum</option><option value="fasilitas">Importir Fasilitas (AEO/MITA/Kawasan Berikat/KITE)*</option></select></div></div><div class="overflow-x-auto"><table id="sanksi-input-table"><thead></thead><tbody id="sanksi-items-container"></tbody></table></div><p class="text-xs text-gray-500 mt-2 mb-4">*Skema denda berjenjang akan diterapkan otomatis sesuai aturan.</p><button onclick="calculateSanksi()" class="btn btn-primary">Hitung Sanksi</button><div id="sanksi-result-container" class="mt-4 space-y-2 hidden"><div class="result-display">Total BM Dibayar: <span id="sanksi-total-bm-dibayar"></span></div><div class="result-display">Total BM Seharusnya: <span id="sanksi-total-bm-seharusnya"></span></div><div class="result-display">Kekurangan Pembayaran BM: <span id="sanksi-result-kurang"></span></div><div class="result-display">Persentase Kekurangan: <span id="sanksi-result-persen"></span></div><div class="result-display">Tarif Denda Berlaku: <span id="sanksi-result-tarif"></span></div><div class="result-display bg-red-100 text-red-800"><strong>Total Denda:</strong> <span id="sanksi-result-denda"></span></div><div class="flex flex-wrap gap-4 mt-4"><button onclick="exportSanksi('xlsx')" class="btn btn-export">Export ke Excel</button><button onclick="exportSanksi('csv')" class="btn btn-export">Export ke CSV (Sheets)</button></div></div></div></div>
+                <!-- Temporary Import Calculator -->
+                <div class="section-card"><h2>Kalkulator Impor Sementara</h2><p>Simulasikan pembayaran untuk impor sementara. Masukkan total pungutan yang seharusnya dibayar jika impor biasa, dan jangka waktu penggunaan.</p><div class="grid grid-cols-1 md:grid-cols-2 gap-x-6"><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-bm">Total Bea Masuk Seharusnya (Rp)</label><input type="text" id="is-bm" class="input-field number-input" placeholder="18.462.500"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-ppn">Total PPN Seharusnya (Rp)</label><input type="text" id="is-ppn" class="input-field number-input" placeholder="25.240.875"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-pph">Total PPh 22 Seharusnya (Rp)</label><input type="text" id="is-pph" class="input-field number-input" placeholder="5.736.563"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-jw">Jangka Waktu (Bulan)</label><input type="number" id="is-jw" class="input-field" placeholder="12"></div></div><button onclick="calculateImporSementara()" class="btn btn-primary">Hitung Impor Sementara</button><div id="is-result-container" class="mt-4 space-y-2 hidden"><div class="result-display">Total Pungutan Seharusnya: <span id="is-total-pungutan"></span></div><div class="result-display">Pembayaran per Bulan (2%): <span id="is-per-bulan"></span></div><div class="result-display bg-blue-100 text-blue-800"><strong>Total Bayar Impor Sementara:</strong> <span id="is-total-bayar"></span></div></div></div>
+            </div>
+
+            <!-- Kuota Impor Page -->
+            <div id="kuota-impor" class="page-content">
+                <div class="section-card">
+                    <h2>Syarat Kuota Impor (Permendag 16-24 Tahun 2025)</h2>
+                    <div class="space-y-4 text-gray-700">
+                        <p>Pada pertengahan tahun 2025, Kementerian Perdagangan melakukan perombakan kebijakan impor dengan menerbitkan serangkaian peraturan baru (Permendag No. 16/2025 hingga 24/2025). Kebijakan ini mengakhiri era relaksasi impor di bawah Permendag 8/2024 dan kembali memberlakukan syarat <strong>Persetujuan Impor (PI)</strong> dan <strong>Laporan Surveyor (LS)</strong> untuk berbagai komoditas strategis. Tujuannya adalah untuk melindungi industri dalam negeri, menekan impor ilegal, dan menjaga neraca perdagangan.</p>
+                        <h3>Syarat Umum Pengajuan Persetujuan Impor (PI)</h3>
+                        <p>Secara umum, perusahaan yang ingin mendapatkan kuota impor (dalam bentuk PI) harus memenuhi persyaratan fundamental sebagai berikut:</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Legalitas Usaha yang Valid:</strong> Memiliki Nomor Induk Berusaha (NIB) yang masih berlaku sebagai Angka Pengenal Importir (API).</li>
+                            <li><strong>Izin Usaha Terkait:</strong> Memiliki izin usaha di sektornya masing-masing (misalnya, Izin Usaha Industri untuk importir produsen).</li>
+                            <li><strong>Rencana Kebutuhan Impor:</strong> Mengajukan rencana kebutuhan barang impor untuk periode tertentu (biasanya satu tahun), yang didukung oleh data kapasitas produksi atau rencana penjualan.</li>
+                            <li><strong>Laporan Realisasi Impor:</strong> Menyerahkan laporan realisasi impor dari periode sebelumnya sebagai bukti kepatuhan dan akuntabilitas.</li>
+                            <li><strong>Dokumen Pendukung Lainnya:</strong> Tergantung komoditasnya, mungkin diperlukan dokumen tambahan seperti rekomendasi dari kementerian teknis (misal: Kemenperin).</li>
+                        </ul>
+                        <h3>Highlight Peraturan Spesifik (Contoh)</h3>
+                        <p>Setiap peraturan memiliki fokusnya masing-masing:</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Permendag 16/2025:</strong> Umumnya menjadi peraturan payung yang mengembalikan syarat PI untuk barang konsumsi yang sebelumnya dibebaskan, seperti <strong>Elektronik, Alas Kaki, Pakaian Jadi, dan Mainan Anak</strong>. Pengetatan ini bertujuan langsung untuk membendung serbuan produk impor jadi.</li>
+                            <li><strong>Permendag Lainnya (Seri 17-24/2025):</strong> Peraturan-peraturan ini biasanya mengatur komoditas yang lebih spesifik dan krusial bagi industri, seperti:
+                                <ul>
+                                    <li>- <strong>Besi atau Baja:</strong> Memerlukan pertimbangan teknis dari Kemenperin terkait kebutuhan proyek dan industri nasional.</li>
+                                    <li>- <strong>Produk Tekstil dan Turunannya (TPT):</strong> Syarat PI diperketat untuk melindungi industri TPT dalam negeri dari hulu hingga hilir.</li>
+                                    <li>- <strong>Produk Kimia dan Bahan Berbahaya:</strong> Memerlukan verifikasi keamanan dan rekomendasi dari instansi terkait.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                         <h3>Alur Proses Pengajuan</h3>
+                         <p>Proses pengajuan PI dilakukan secara digital melalui portal <strong>INSW (Indonesia National Single Window)</strong> dan sistem <strong>SIINas (Sistem Informasi Industri Nasional)</strong>. Secara garis besar, alurnya adalah:
+                         <ol class="list-decimal list-inside space-y-2">
+                            <li>Perusahaan mengajukan permohonan secara online dengan melengkapi data dan dokumen yang dipersyaratkan.</li>
+                            <li>Sistem akan melakukan verifikasi awal. Jika komoditas memerlukan rekomendasi teknis, permohonan akan diteruskan ke kementerian terkait (misal: Kemenperin).</li>
+                            <li>Setelah mendapatkan rekomendasi (jika perlu), Kementerian Perdagangan akan melakukan verifikasi akhir.</li>
+                            <li>Jika semua syarat terpenuhi, Kemendag akan menerbitkan Persetujuan Impor (PI) yang berisi kuota jumlah dan jenis barang yang boleh diimpor.</li>
+                         </ol>
+                    </div>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table id="pib-table">
-                    <thead><tr><th>Serial</th><th>Cost Barang (Rp)</th><th>Tarif BM (%)</th><th>Aksi</th></tr></thead>
-                    <tbody id="items-container"></tbody>
-                </table>
+            <!-- Fasilitas Page -->
+            <div id="fasilitas" class="page-content">
+                 <div class="section-card">
+                    <h2>Analisis Fasilitas Kepabeanan</h2>
+                    <div class="space-y-6 text-gray-700">
+                        <div><h3>Kawasan Berikat (KB)</h3><p>Tempat penimbunan berikat untuk menimbun barang impor dan/atau barang yang berasal dari tempat lain dalam daerah pabean guna diolah ataupun digabungkan, yang hasilnya terutama untuk diekspor.</p><p><strong>Analisis & Manfaat:</strong> Penangguhan Bea Masuk dan tidak dipungut PDRI atas impor bahan baku. Sangat membantu arus kas (cash flow) perusahaan manufaktur berorientasi ekspor.</p></div>
+                        <div><h3>Gudang Berikat (GB)</h3><p>Tempat penimbunan berikat untuk menimbun barang impor, dapat disertai 1 atau lebih kegiatan berupa pengemasan/pengemasan kembali, penyortiran, penggabungan (kitting), pengepakan, penyetelan, pemotongan, atas barang-barang tertentu dalam jangka waktu tertentu untuk dikeluarkan kembali.</p><p><strong>Analisis & Manfaat:</strong> Sama seperti KB, mendapat penangguhan BM dan tidak dipungut PDRI. Cocok untuk industri yang butuh pusat distribusi logistik bahan baku impor di dekat lokasi industrinya.</p></div>
+                        <div><h3>Pusat Logistik Berikat (PLB)</h3><p>Tempat penimbunan berikat untuk menimbun barang asal luar daerah pabean dan/atau barang yang berasal dari tempat lain dalam daerah pabean, dapat disertai 1 atau lebih kegiatan sederhana dalam jangka waktu tertentu untuk dikeluarkan kembali.</p><p><strong>Analisis & Manfaat:</strong> Menjadikan Indonesia sebagai hub logistik di Asia Pasifik. Importir dapat menimbun barang di PLB dengan penangguhan BM & PDRI, mendekatkan bahan baku dengan pabrik tanpa harus langsung melakukan proses impor penuh.</p></div>
+                        <div><h3>Kawasan Bebas (Free Trade Zone)</h3><p>Suatu kawasan yang berada dalam wilayah hukum NKRI yang terpisah dari daerah pabean sehingga bebas dari pengenaan Bea Masuk, PPN, PPnBM, dan Cukai. Contoh: Batam, Bintan, Karimun.</p><p><strong>Analisis & Manfaat:</strong> Pemasukan barang konsumsi dari luar negeri ke Kawasan Bebas tidak dipungut BM & PDRI. Ini bertujuan untuk mendorong kegiatan ekonomi, pariwisata, dan perdagangan di wilayah perbatasan.</p></div>
+                        <div><h3>Kemudahan Impor Tujuan Ekspor (KITE)</h3><p>Fasilitas pembebasan atau pengembalian Bea Masuk dan PPN tidak dipungut atas impor bahan baku untuk diolah, dirakit, atau dipasang pada barang lain dengan tujuan untuk diekspor.</p><p><strong>Analisis & Manfaat:</strong> Membuat harga produk ekspor lebih kompetitif. Berbeda dengan KB, perusahaan KITE tidak harus berada di kawasan khusus, memberikan fleksibilitas lokasi yang lebih tinggi.</p></div>
+                        <div><h3>Mitra Utama Kepabeanan (MITA) & Authorized Economic Operator (AEO)</h3><p>Status pengakuan oleh DJBC kepada perusahaan dengan rekam jejak kepatuhan yang sangat baik. AEO memiliki standar lebih tinggi dan diakui secara internasional.</p><p><strong>Analisis & Manfaat:</strong> Mendapatkan perlakuan "karpet merah" berupa penyederhanaan prosedur, pemeriksaan fisik minim (jalur hijau), dan proses pengeluaran barang yang sangat cepat. Mengurangi waktu dan biaya logistik secara signifikan.</p></div>
+                        <div><h3>Toko Bebas Bea (TBB / Duty Free Shop)</h3><p>Bangunan yang berlokasi di kawasan pabean di bandar udara internasional atau pelabuhan utama untuk menjual barang asal impor kepada orang yang bepergian ke luar negeri.</p><p><strong>Analisis & Manfaat:</strong> Memberikan fasilitas kepada wisatawan atau penumpang untuk membeli barang impor tanpa dikenai BM dan PDRI, sebagai salah satu daya tarik dalam industri pariwisata.</p></div>
+                        <div><h3>Barang Penumpang & Barang Kiriman</h3><p>Fasilitas pembebasan bea masuk yang diberikan kepada individu. <strong>Barang Penumpang</strong> adalah barang pribadi yang dibawa dari luar negeri (saat ini de minimis USD 500 per orang). <strong>Barang Kiriman</strong> adalah barang yang dikirim melalui Penyelenggara Pos (misal: e-commerce) dengan de minimis saat ini USD 3 per kiriman.</p><p><strong>Analisis & Manfaat:</strong> Memudahkan masyarakat untuk membawa atau menerima barang dari luar negeri untuk keperluan pribadi dalam batas nilai tertentu tanpa melalui proses impor yang rumit.</p></div>
+                        <div>
+                            <h3>Pemanfaatan Free Trade Agreement (FTA)</h3>
+                            <p>FTA adalah perjanjian perdagangan bebas antar negara yang memungkinkan importir mendapatkan keringanan atau pembebasan Bea Masuk (tarif preferensi). Untuk memanfaatkannya, importir harus membuktikan bahwa barangnya berasal dari negara mitra FTA.</p>
+                            <p><strong>Kriteria Utama yang Harus Dipenuhi:</strong></p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Rules of Origin (Ketentuan Asal Barang):</strong> Barang harus memenuhi kriteria asal barang yang ditetapkan dalam perjanjian. Ini bisa berarti barang tersebut sepenuhnya diperoleh/diproduksi di negara mitra (Wholly Obtained), atau telah melalui proses pengerjaan yang substansial (Substantial Transformation) yang diukur dengan persentase kandungan lokal atau perubahan klasifikasi HS Code.</li>
+                                <li><strong>Surat Keterangan Asal (SKA) / Certificate of Origin (COO):</strong> Importir wajib melampirkan SKA (Form D untuk ATIGA, Form E untuk ACFTA, dll.) yang valid. Dokumen ini diterbitkan oleh instansi berwenang di negara pengekspor dan menjadi bukti utama bahwa barang memenuhi Rules of Origin.</li>
+                                <li><strong>Ketentuan Pengiriman Langsung (Direct Consignment):</strong> Barang harus dikirimkan secara langsung dari negara pengekspor ke Indonesia. Transit di negara lain diperbolehkan selama tidak ada proses pengerjaan lebih lanjut (hanya bongkar muat) dan tetap dalam pengawasan pabean di negara transit.</li>
+                                <li><strong>Ketentuan Prosedural:</strong> Importir harus mencantumkan nomor referensi SKA dan kode fasilitas pada dokumen Pemberitahuan Impor Barang (PIB). Selain itu, importir wajib menyimpan semua dokumen terkait impor dengan skema FTA selama periode tertentu untuk keperluan audit atau verifikasi oleh DJBC di kemudian hari.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button id="add-item-btn" class="btn btn-primary mt-4">Tambah Barang</button>
-            <hr class="my-6">
-            <div class="flex space-x-4"><button onclick="calculateMain()" class="btn btn-primary text-lg">Hitung & Detailkan PIB</button><button onclick="resetMain()" class="btn btn-secondary">Reset</button></div>
             
-            <div id="pib-results-detail" class="mt-4 hidden">
-                <h3 class="text-lg font-semibold mb-2">Detail Perhitungan PIB</h3>
-                <div class="overflow-x-auto">
-                    <table id="pib-results-table">
-                        <thead><tr><th>Serial</th><th class="text-right">Nilai Pabean</th><th class="text-right">Bea Masuk</th><th class="text-right">Nilai Impor</th><th class="text-right">PPN</th><th class="text-right">PPh 22</th></tr></thead>
-                        <tbody id="pib-results-body"></tbody>
-                        <tfoot id="pib-results-foot"></tfoot>
-                    </table>
-                </div>
-                <div class="flex space-x-4 mt-4">
-                    <button onclick="exportPIB('xlsx')" class="btn btn-export">Export ke Excel</button>
-                    <button onclick="exportPIB('csv')" class="btn btn-export">Export ke CSV (Sheets)</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sanctions Calculator -->
-        <div class="section-card">
-            <h2>Kalkulator Sanksi Administrasi</h2>
-            <div id="sanksi-placeholder" class="text-center p-8 bg-gray-100 rounded-lg">
-                <p class="text-gray-600 font-medium">Lengkapi dan hitung detail PIB di atas terlebih dahulu untuk mengaktifkan kalkulator sanksi.</p>
-            </div>
-            <div id="sanksi-content" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-pelanggaran">Jenis Kesalahan</label>
-                        <select id="sanksi-jenis-pelanggaran" class="input-field !text-left" onchange="toggleSanksiInput()">
-                            <option value="nilai_pabean" selected>Kesalahan Nilai Pabean</option>
-                            <option value="tarif">Kesalahan Tarif</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-importir">Jenis Importir</label>
-                        <select id="sanksi-jenis-importir" class="input-field !text-left">
-                            <option value="umum" selected>Importir Umum</option>
-                            <option value="fasilitas">Importir Fasilitas (AEO/MITA/Kawasan Berikat/KITE)*</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table id="sanksi-input-table">
-                        <thead></thead>
-                        <tbody id="sanksi-items-container"></tbody>
-                    </table>
-                </div>
-                <p class="text-xs text-gray-500 mt-2 mb-4">*Skema denda berjenjang akan diterapkan otomatis sesuai aturan.</p>
-                <button onclick="calculateSanksi()" class="btn btn-primary">Hitung Sanksi</button>
-                <div id="sanksi-result-container" class="mt-4 space-y-2 hidden">
-                    <div class="result-display">Total BM Dibayar: <span id="sanksi-total-bm-dibayar"></span></div>
-                    <div class="result-display">Total BM Seharusnya: <span id="sanksi-total-bm-seharusnya"></span></div>
-                    <div class="result-display">Kekurangan Pembayaran BM: <span id="sanksi-result-kurang"></span></div>
-                    <div class="result-display">Persentase Kekurangan: <span id="sanksi-result-persen"></span></div>
-                    <div class="result-display">Tarif Denda Berlaku: <span id="sanksi-result-tarif"></span></div>
-                    <div class="result-display bg-red-100 text-red-800"><strong>Total Denda:</strong> <span id="sanksi-result-denda"></span></div>
-                    <div class="flex space-x-4 mt-4">
-                        <button onclick="exportSanksi('xlsx')" class="btn btn-export">Export ke Excel</button>
-                        <button onclick="exportSanksi('csv')" class="btn btn-export">Export ke CSV (Sheets)</button>
+            <!-- Studi Kasus Page -->
+            <div id="studi-kasus" class="page-content">
+                <div class="section-card">
+                    <h2>Studi Kasus Kepabeanan</h2>
+                    <div class="space-y-6 text-gray-700">
+                        <div><h3>Kasus 1: Impor Multi-Item dengan BM Anti Dumping</h3><p>PT ABC mengimpor 2 jenis barang dari negara X. Perusahaan memiliki API. Salah satu barang dikenakan BMAD.</p><ul class="list-disc list-inside"><li>Total Insurance: Rp 2.000.000, Total Freight: Rp 15.000.000</li><li>Barang 1: 100 unit Komponen Mesin, Cost: Rp 200.000.000, Tarif BM: 10%, Tarif BMAD: 0%</li><li>Barang 2: 50 unit Plat Baja, Cost: Rp 50.000.000, Tarif BM: 5%, Tarif BMAD: 15%</li></ul><p><strong>Perhitungan:</strong> Kalkulator akan mengalokasikan Insurance & Freight secara proporsional, lalu menghitung BM dan BMAD untuk setiap item. Hasilnya akan menunjukkan total pungutan yang harus dibayar, dengan BM dan BMAD sebagai komponen terpisah.</p></div>
+                        <div><h3>Kasus 2: Sanksi Denda Akibat Kesalahan Nilai Pabean</h3><p>Setelah melakukan impor pada Kasus 1, PT ABC diaudit oleh DJBC dan ditemukan bahwa Nilai Pabean untuk Komponen Mesin seharusnya lebih tinggi.</p><ul class="list-disc list-inside"><li>BM yang sudah dibayar (total): Rp 22.100.000</li><li>Hasil Audit: Nilai Pabean Komponen Mesin seharusnya Rp 220.000.000 (bukan Rp 203.400.000).</li><li>BM Seharusnya: (Rp 220.000.000 * 10%) + BM Plat Baja = Rp 22.000.000 + Rp 2.600.000 = Rp 24.600.000</li><li>Kekurangan Bayar: Rp 2.500.000</li></ul><p><strong>Perhitungan Sanksi:</strong> Kalkulator akan menghitung persentase kekurangan (Rp 2.5jt / Rp 22.1jt = 11,3%). Karena di bawah 25%, denda untuk importir umum adalah 100% dari kekurangan, yaitu Rp 2.500.000.</p></div>
+                        <div>
+                            <h3>Kasus 3: Sengketa Klasifikasi Barang (HS Code)</h3>
+                            <p>PT DEF mengimpor "Mesin Pengolah Data Otomatis" dan memberitahukannya dalam PIB dengan HS Code 8471.50.00 (Tarif BM 0%). Setelah diperiksa, Pejabat Bea Cukai menetapkan bahwa barang tersebut lebih tepat diklasifikasikan sebagai "Peralatan Telekomunikasi" dengan HS Code 8517.62.00 (Tarif BM 5%).</p>
+                             <ul class="list-disc list-inside">
+                                <li>Nilai Pabean Barang: Rp 500.000.000</li>
+                                <li>BM yang dibayar (menurut importir): Rp 500.000.000 * 0% = Rp 0</li>
+                                <li>BM Seharusnya (menurut DJBC): Rp 500.000.000 * 5% = Rp 25.000.000</li>
+                                <li>Kekurangan Bayar BM: Rp 25.000.000</li>
+                            </ul>
+                            <p><strong>Konsekuensi:</strong> PT DEF harus membayar kekurangan BM sebesar Rp 25.000.000. Selain itu, karena terjadi kesalahan pemberitahuan yang menyebabkan kekurangan bayar, PT DEF juga akan dikenakan sanksi administrasi berupa denda sesuai ketentuan yang berlaku.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Additional Content -->
-        <div class="section-card">
-            <h2>Dasar Hukum Kepabeanan</h2>
-            <ul class="list-disc list-inside space-y-2 text-gray-700">
-                <li><strong>Undang-Undang Nomor 17 Tahun 2006</strong> tentang Perubahan atas Undang-Undang Nomor 10 Tahun 1995 tentang Kepabeanan. (Landasan utama hukum kepabeanan di Indonesia).</li>
-                <li><strong>Peraturan Menteri Keuangan (PMK) Nomor 144/PMK.04/2022</strong> tentang Nilai Pabean untuk Penghitungan Bea Masuk.</li>
-                <li><strong>Peraturan Menteri Keuangan (PMK) Nomor 51/PMK.04/2017</strong> tentang Pengenaan dan Tata Cara Penghitungan Sanksi Administrasi Berupa Denda di Bidang Kepabeanan.</li>
-                <li><strong>Peraturan Menteri Keuangan (PMK) Nomor 34/PMK.010/2017</strong> tentang Pemungutan Pajak Penghasilan Pasal 22 Sehubungan Dengan Pembayaran atas Penyerahan Barang dan Kegiatan di Bidang Impor atau Kegiatan Usaha di Bidang Lain.</li>
-                 <li><strong>Undang-Undang Nomor 7 Tahun 2021</strong> tentang Harmonisasi Peraturan Perpajakan (UU HPP), yang mengatur tarif PPN menjadi 11%.</li>
-            </ul>
-        </div>
-        
-        <div class="section-card">
-            <h2>Analisa Komprehensif</h2>
-            <div class="space-y-4 text-gray-700">
-                <p>Proses impor barang ke Indonesia melibatkan serangkaian perhitungan yang krusial, tidak hanya bagi importir tetapi juga bagi perekonomian nasional. Setiap komponen memiliki peran dan dampak yang spesifik:</p>
-                <p><strong>1. Nilai Pabean (CIF):</strong> Ini adalah fondasi dari semua perhitungan. Nilai Pabean merupakan penjumlahan dari `Cost` (harga barang), `Insurance` (asuransi), dan `Freight` (biaya pengangkutan). Akurasi dalam menentukan Nilai Pabean sangat penting karena menjadi dasar utama pengenaan Bea Masuk dan Pajak Dalam Rangka Impor (PDRI). Kesalahan dalam pemberitahuan nilai ini adalah pelanggaran yang paling umum terjadi dan dapat berujung pada sanksi yang signifikan.</p>
-                <p><strong>2. Bea Masuk (BM):</strong> Merupakan pungutan negara yang dikenakan terhadap barang impor. Fungsinya ganda: sebagai sumber penerimaan negara dan sebagai instrumen untuk melindungi industri dalam negeri (fungsi proteksi). Tarif Bea Masuk yang berbeda-beda untuk setiap jenis barang mencerminkan kebijakan pemerintah dalam mendorong atau mengendalikan impor komoditas tertentu.</p>
-                <p><strong>3. Pajak Dalam Rangka Impor (PDRI):</strong> Terdiri dari PPN dan PPh Pasal 22. PDRI memastikan bahwa barang impor dikenakan perlakuan pajak yang sama dengan barang produksi lokal (prinsip *level playing field*). PPN dikenakan untuk konsumsi, sementara PPh 22 merupakan pembayaran pajak di muka bagi importir yang dapat dikreditkan dalam laporan pajak tahunannya.</p>
-                <p><strong>4. Sanksi Administrasi:</strong> Berfungsi sebagai alat penegakan hukum (law enforcement) untuk memastikan kepatuhan. Skema denda berjenjang yang progresif dirancang untuk memberikan efek jera yang sepadan dengan tingkat pelanggaran. Semakin besar persentase kekurangan bayar, semakin tinggi pula denda yang dikenakan, mendorong importir untuk lebih teliti dan jujur dalam pemberitahuannya.</p>
-                <p>Secara keseluruhan, sistem ini menciptakan sebuah ekosistem di mana akurasi dan kepatuhan sangat dihargai. Kalkulator ini dirancang untuk membantu para pelaku usaha memahami dinamika tersebut dan membuat perencanaan yang lebih baik dalam kegiatan impor mereka.</p>
+
+            <!-- Peraturan Page -->
+            <div id="peraturan" class="page-content">
+                <div class="section-card">
+                    <h2>Pusat Peraturan</h2>
+                    <div class="space-y-6">
+                        <div><h3>Undang-Undang</h3><ul class="list-disc list-inside text-blue-600"><li><a href="#" class="hover:underline">UU No. 17 Tahun 2006 (Kepabeanan)</a></li><li><a href="#" class="hover:underline">UU No. 7 Tahun 2021 (Harmonisasi Peraturan Perpajakan)</a></li></ul></div>
+                        <div><h3>Peraturan Menteri Keuangan (PMK)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="#" class="hover:underline">PMK tentang Nilai Pabean</a></li><li><a href="#" class="hover:underline">PMK tentang Impor Sementara</a></li><li><a href="#" class="hover:underline">PMK tentang Kawasan Berikat</a></li><li><a href="#" class="hover:underline">PMK tentang Pusat Logistik Berikat</a></li><li><a href="#" class="hover:underline">PMK tentang KITE</a></li><li><a href="#" class="hover:underline">PMK tentang Sanksi Administrasi Denda</a></li></ul></div>
+                        <div><h3>Peraturan Menteri Perdagangan (Permendag)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="#" class="hover:underline">Permendag tentang Kebijakan dan Pengaturan Impor</a></li><li><a href="#" class="hover:underline">Permendag tentang Ketentuan Impor Besi atau Baja</a></li></ul></div>
+                        <div><h3>Peraturan Direktur Jenderal Bea dan Cukai (Perdirjen)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="#" class="hover:underline">Perdirjen tentang Petunjuk Pelaksanaan Kawasan Berikat</a></li><li><a href="#" class="hover:underline">Perdirjen tentang Tata Laksana Pemasukan dan Pengeluaran Barang ke dan dari Pusat Logistik Berikat</a></li></ul></div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-
+            <!-- Glosarium Page -->
+            <div id="glosarium" class="page-content">
+                 <div class="section-card">
+                    <h2>Glosarium Istilah Kepabeanan</h2>
+                    <div class="space-y-4">
+                        <div><h4 class="font-semibold text-gray-800">Angka Pengenal Importir (API)</h4><p class="text-gray-600">Tanda pengenal yang wajib dimiliki oleh setiap perusahaan yang melakukan kegiatan impor barang.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Daerah Pabean</h4><p class="text-gray-600">Wilayah Republik Indonesia yang meliputi darat, perairan, dan ruang udara di atasnya, serta tempat-tempat tertentu di Zona Ekonomi Eksklusif dan landas kontinen yang di dalamnya berlaku Undang-Undang Kepabeanan.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">De Minimis Value</h4><p class="text-gray-600">Batas nilai pabean atas barang kiriman yang diberikan pembebasan bea masuk. Saat ini ditetapkan sebesar FOB USD 3 per kiriman.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">HS Code (Harmonized System Code)</h4><p class="text-gray-600">Sistem klasifikasi barang yang digunakan secara internasional untuk mengidentifikasi produk. HS Code menentukan besaran tarif bea masuk suatu barang.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Jalur Merah, Kuning, Hijau</h4><p class="text-gray-600">Sistem manajemen risiko DJBC. <strong>Jalur Merah:</strong> Pemeriksaan fisik dan dokumen. <strong>Jalur Kuning:</strong> Hanya pemeriksaan dokumen. <strong>Jalur Hijau:</strong> Tidak ada pemeriksaan, barang dapat langsung keluar.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Kawasan Pabean</h4><p class="text-gray-600">Kawasan dengan batas-batas tertentu di pelabuhan laut, bandar udara, atau tempat lain yang ditetapkan untuk lalu lintas barang yang sepenuhnya berada di bawah pengawasan DJBC.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Lartas (Larangan dan Pembatasan)</h4><p class="text-gray-600">Barang-barang yang impornya dilarang atau dibatasi dan memerlukan perizinan khusus dari instansi teknis terkait sebelum dapat diimpor.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Nilai Pabean</h4><p class="text-gray-600">Nilai transaksi dari barang impor yang digunakan sebagai dasar untuk menghitung bea masuk. Umumnya menggunakan metode CIF (Cost, Insurance, Freight).</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Nota Pembetulan (Notul)</h4><p class="text-gray-600">Dokumen yang diterbitkan oleh Pejabat Bea Cukai untuk mengoreksi data pada PIB yang menyebabkan kekurangan atau kelebihan pembayaran pungutan negara.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Pemberitahuan Ekspor Barang (PEB)</h4><p class="text-gray-600">Dokumen pabean yang digunakan untuk memberitahukan pelaksanaan ekspor barang.</p></div>
+                        <div><h4 class="font-semibold text-gray-800">Pemberitahuan Impor Barang (PIB)</h4><p class="text-gray-600">Dokumen pemberitahuan yang diajukan oleh importir kepada kantor bea cukai atas barang yang diimpor, berisi detail barang, nilai, dan data lain yang menjadi dasar perhitungan pungutan negara.</p></div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
 <script>
+// --- NAVIGATION ---
+function showPage(pageId) {
+    document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`).classList.add('active');
+}
+
+// --- CALCULATOR LOGIC ---
 document.addEventListener('DOMContentLoaded', function() {
-    let itemCounter = 0;
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item-btn');
 
+    function updateSerialNumbers() {
+        const rows = itemsContainer.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            row.querySelector('td:first-child').textContent = index + 1;
+        });
+    }
+
     function createItemRow() {
-        itemCounter++;
         const itemRow = document.createElement('tr');
-        itemRow.id = `item-row-${itemCounter}`;
         itemRow.innerHTML = `
-            <td class="font-semibold">${itemCounter}</td>
+            <td class="font-semibold"></td>
             <td><input type="text" class="input-field number-input item-cost" placeholder="15.000.000"></td>
             <td><input type="number" class="input-field item-bm-tarif" placeholder="7.5"></td>
-            <td><button class="btn btn-danger btn-sm remove-item-btn" data-row-id="${itemCounter}">X</button></td>
+            <td><input type="number" class="input-field item-bmad-tarif" placeholder="0"></td>
+            <td><button class="btn btn-danger btn-sm remove-item-btn">X</button></td>
         `;
         itemsContainer.appendChild(itemRow);
+        
         itemRow.querySelector('.remove-item-btn').addEventListener('click', function() {
             itemRow.remove();
+            updateSerialNumbers();
         });
+        
         addNumberFormatting(itemRow.querySelector('.number-input'));
+        updateSerialNumbers();
     }
     
     document.querySelectorAll('.number-input').forEach(addNumberFormatting);
@@ -298,7 +324,6 @@ function addNumberFormatting(inputElement) {
 
 function unformatNumber(formattedValue) {
     if (typeof formattedValue !== 'string') return 0;
-    // Handles both "Rp1.234.567" and "1.234.567"
     return formattedValue.replace(/[^0-9,-]/g, '').replace(/,.*$/, '');
 }
 
@@ -343,25 +368,31 @@ function calculateMain() {
 
     const resultsBody = document.getElementById('pib-results-body');
     const resultsFoot = document.getElementById('pib-results-foot');
+    const explanationDiv = document.getElementById('pib-calculation-explanation');
     resultsBody.innerHTML = '';
+    explanationDiv.innerHTML = '<h3>Rincian Proses Perhitungan</h3>';
     
     let totalBMUnrounded = 0;
+    let totalBMADUnrounded = 0;
     let total = { np: 0, ni: 0, ppn: 0, pph: 0 };
 
     items.forEach((row, index) => {
         const serial = index + 1;
         const itemCost = getFloatValueFromElement(row.querySelector('.item-cost'));
         const itemBMTarif = getFloatValueFromElement(row.querySelector('.item-bm-tarif')) / 100;
+        const itemBMADTarif = getFloatValueFromElement(row.querySelector('.item-bmad-tarif')) / 100;
         
-        const costProportion = itemCost / grandTotalCost;
+        const costProportion = grandTotalCost > 0 ? itemCost / grandTotalCost : 0;
         const apportionedAdditions = shipmentAdditions * costProportion;
         const apportionedDiscount = totalDiscount * costProportion;
         
         const np = (itemCost + apportionedAdditions) - apportionedDiscount;
         const bmUnrounded = np * itemBMTarif;
-        totalBMUnrounded += bmUnrounded;
+        const bmadUnrounded = np * itemBMADTarif;
         
-        const bmDisplay = bmUnrounded;
+        totalBMUnrounded += bmUnrounded;
+        totalBMADUnrounded += bmadUnrounded;
+        
         const ni = np + bmUnrounded;
         const ppn = Math.floor(ni * 0.11);
         const niBasisPph = Math.floor(ni / 1000) * 1000;
@@ -376,21 +407,43 @@ function calculateMain() {
         resultRow.innerHTML = `
             <td>${serial}</td>
             <td class="text-right">${formatRupiah(np)}</td>
-            <td class="text-right">${formatRupiah(bmDisplay)}</td>
+            <td class="text-right">${formatRupiah(bmUnrounded)}</td>
+            <td class="text-right">${formatRupiah(bmadUnrounded)}</td>
             <td class="text-right">${formatRupiah(ni)}</td>
             <td class="text-right">${formatRupiah(ppn)}</td>
             <td class="text-right">${formatRupiah(pph)}</td>
         `;
         resultsBody.appendChild(resultRow);
+        
+        explanationDiv.innerHTML += `
+            <div class="mb-4 p-2 border-l-4 border-blue-500">
+                <p class="font-semibold">Barang #${serial}:</p>
+                <p class="text-sm"><strong>Nilai Pabean:</strong> (${formatRupiah(itemCost, false)} + ${formatRupiah(apportionedAdditions, false)}) - ${formatRupiah(apportionedDiscount, false)} = <strong>${formatRupiah(np)}</strong></p>
+                <p class="text-sm"><strong>Bea Masuk:</strong> ${formatRupiah(np)} x ${itemBMTarif*100}% = <strong>${formatRupiah(bmUnrounded)}</strong></p>
+                <p class="text-sm"><strong>Nilai Impor (Dasar PDRI):</strong> ${formatRupiah(np)} + ${formatRupiah(bmUnrounded)} = <strong>${formatRupiah(ni)}</strong></p>
+                <p class="text-sm"><strong>PPN:</strong> ${formatRupiah(ni)} x 11% = ${formatRupiah(ni*0.11)} -> dibulatkan menjadi <strong>${formatRupiah(ppn)}</strong></p>
+                <p class="text-sm"><strong>PPh 22:</strong> (Dasar: ${formatRupiah(niBasisPph)}) x ${pphTarif*100}% = ${formatRupiah(niBasisPph*pphTarif)} -> dibulatkan menjadi <strong>${formatRupiah(pph)}</strong></p>
+            </div>
+        `;
     });
     
     const totalBMRounded = Math.ceil(totalBMUnrounded / 1000) * 1000;
+    const totalBMADRounded = Math.ceil(totalBMADUnrounded / 1000) * 1000;
+
+    explanationDiv.innerHTML += `
+        <div class="mt-4 p-2 border-t-2 border-gray-200">
+            <p class="font-semibold">Total Pungutan (dengan Pembulatan PIB):</p>
+            <p class="text-sm"><strong>Total Bea Masuk:</strong> ${formatRupiah(totalBMUnrounded)} -> dibulatkan ke atas menjadi <strong>${formatRupiah(totalBMRounded)}</strong></p>
+            <p class="text-sm"><strong>Total BM Anti Dumping:</strong> ${formatRupiah(totalBMADUnrounded)} -> dibulatkan ke atas menjadi <strong>${formatRupiah(totalBMADRounded)}</strong></p>
+        </div>
+    `;
 
     resultsFoot.innerHTML = `
         <tr>
             <td class="font-bold">TOTAL</td>
             <td class="text-right">${formatRupiah(total.np)}</td>
             <td class="text-right">${formatRupiah(totalBMRounded)}</td>
+            <td class="text-right">${formatRupiah(totalBMADRounded)}</td>
             <td class="text-right">${formatRupiah(total.ni)}</td>
             <td class="text-right">${formatRupiah(total.ppn)}</td>
             <td class="text-right">${formatRupiah(total.pph)}</td>
@@ -398,6 +451,7 @@ function calculateMain() {
     `;
     
     document.getElementById('pib-results-detail').classList.remove('hidden');
+    document.getElementById('pib-calculation-explanation').classList.remove('hidden');
     document.getElementById('sanksi-placeholder').classList.add('hidden');
     document.getElementById('sanksi-content').classList.remove('hidden');
     populateSanksiCalculator();
@@ -410,6 +464,7 @@ function resetMain() {
     document.getElementById('items-container').innerHTML = '';
     document.getElementById('add-item-btn').click();
     document.getElementById('pib-results-detail').classList.add('hidden');
+    document.getElementById('pib-calculation-explanation').classList.add('hidden');
     
     document.getElementById('sanksi-content').classList.add('hidden');
     document.getElementById('sanksi-placeholder').classList.remove('hidden');
@@ -526,6 +581,28 @@ function calculateSanksi() {
     document.getElementById('sanksi-result-denda').innerText = formatRupiah(denda);
     document.getElementById('sanksi-result-container').classList.remove('hidden');
 }
+
+function calculateImporSementara() {
+    const bm = getFloatValue('is-bm');
+    const ppn = getFloatValue('is-ppn');
+    const pph = getFloatValue('is-pph');
+    const jangkaWaktu = getFloatValue('is-jw');
+
+    if (bm === 0 || jangkaWaktu === 0) {
+        alert("Mohon isi total pungutan dan jangka waktu.");
+        return;
+    }
+    
+    const totalPungutan = bm + ppn + pph;
+    const perBulan = totalPungutan * 0.02; // 2%
+    const totalBayar = perBulan * jangkaWaktu;
+
+    document.getElementById('is-total-pungutan').innerText = formatRupiah(totalPungutan);
+    document.getElementById('is-per-bulan').innerText = formatRupiah(perBulan);
+    document.getElementById('is-total-bayar').innerText = formatRupiah(totalBayar);
+    document.getElementById('is-result-container').classList.remove('hidden');
+}
+
 
 // --- EXPORT FUNCTIONS ---
 
