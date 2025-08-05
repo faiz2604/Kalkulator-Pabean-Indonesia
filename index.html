@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-image: linear-gradient(rgba(239, 246, 255, 0.97), rgba(239, 246, 255, 0.97)), url('https://images.unsplash.com/photo-1616434315428-91285c578f33?q=80&w=2070&auto=format&fit=crop');
+            background-image: linear-gradient(rgba(239, 246, 255, 0.96), rgba(239, 246, 255, 0.96)), url('https://images.unsplash.com/photo-1616434315428-91285c578f33?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -33,7 +33,7 @@
             gap: 0.5rem;
         }
         .nav-link.active {
-            background-color: #2563EB;
+            background-image: linear-gradient(to right, #4f46e5, #2563eb);
             color: white;
             font-weight: 600;
             box-shadow: 0 4px 14px 0 rgb(0 118 255 / 39%);
@@ -94,8 +94,13 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 8px 0 rgb(0 0 0 / 0.15);
         }
-        .btn-primary { background-color: #2563EB; color: white; }
-        .btn-primary:hover { background-color: #1D4ED8; }
+        .btn-primary { 
+            background-image: linear-gradient(to right, #4f46e5, #2563eb); 
+            color: white; 
+        }
+        .btn-primary:hover { 
+            background-image: linear-gradient(to right, #4338ca, #1d4ed8);
+        }
         .btn-secondary { background-color: #6B7280; color: white; }
         .btn-secondary:hover { background-color: #4B5563; }
         .btn-danger { background-color: #EF4444; color: white; }
@@ -105,13 +110,19 @@
         .result-display {
             background-color: #F3F4F6; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; font-size: 1.125rem; font-weight: 600; color: #1F2937;
         }
-        h1 { font-size: 2.25rem; font-weight: 800; }
+        h1 { 
+            font-size: 2.25rem; 
+            font-weight: 800;
+            background: linear-gradient(to right, #4f46e5, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         @media (min-width: 768px) {
             h1 { font-size: 3rem; }
         }
         h2 { 
-            font-size: 1.5rem; font-weight: 700; color: #1E3A8A;
-            background-color: #DBEAFE;
+            font-size: 1.5rem; font-weight: 700; color: white;
+            background-image: linear-gradient(to right, #3b82f6, #6366f1);
             padding: 1rem 1.5rem;
             margin: -1.5rem -1.5rem 1.5rem -1.5rem;
             border-bottom: 1px solid #BFDBFE;
@@ -120,7 +131,11 @@
         table { width: 100%; margin-top: 1rem; border-collapse: collapse; }
         th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #E5E7EB; vertical-align: middle; }
         thead th { background-color: #F9FAFB; font-weight: 600; color: #374151; }
-        tfoot td { font-weight: 700; background-color: #F3F4F6; }
+        tfoot td { 
+            font-weight: 700;
+            background-image: linear-gradient(to right, #dbeafe, #e0e7ff);
+            color: #1e3a8a;
+        }
         .text-right { text-align: right; }
         details > summary {
             cursor: pointer;
@@ -235,6 +250,8 @@
             <div id="glosarium" class="page-content"><div class="section-card"><h2 data-lang-key="glossary_title">Glosarium Istilah Kepabeanan</h2><div class="card-content space-y-4" data-lang-key="glossary_content"><div><h4 class="font-semibold text-gray-800">Angka Pengenal Importir (API)</h4><p class="text-gray-600">Tanda pengenal yang wajib dimiliki oleh setiap perusahaan yang melakukan kegiatan impor barang.</p></div><div><h4 class="font-semibold text-gray-800">Daerah Pabean</h4><p class="text-gray-600">Wilayah Republik Indonesia yang meliputi darat, perairan, dan ruang udara di atasnya, serta tempat-tempat tertentu di Zona Ekonomi Eksklusif dan landas kontinen yang di dalamnya berlaku Undang-Undang Kepabeanan.</p></div><div><h4 class="font-semibold text-gray-800">De Minimis Value</h4><p class="text-gray-600">Batas nilai pabean atas barang kiriman yang diberikan pembebasan bea masuk. Saat ini ditetapkan sebesar FOB USD 3 per kiriman.</p></div><div><h4 class="font-semibold text-gray-800">HS Code (Harmonized System Code)</h4><p class="text-gray-600">Sistem klasifikasi barang yang digunakan secara internasional untuk mengidentifikasi produk. HS Code menentukan besaran tarif bea masuk suatu barang.</p></div><div><h4 class="font-semibold text-gray-800">Jalur Merah, Kuning, Hijau</h4><p class="text-gray-600">Sistem manajemen risiko DJBC. <strong>Jalur Merah:</strong> Pemeriksaan fisik dan dokumen. <strong>Jalur Kuning:</strong> Hanya pemeriksaan dokumen. <strong>Jalur Hijau:</strong> Tidak ada pemeriksaan, barang dapat langsung keluar.</p></div><div><h4 class="font-semibold text-gray-800">Kawasan Pabean</h4><p class="text-gray-600">Kawasan dengan batas-batas tertentu di pelabuhan laut, bandar udara, atau tempat lain yang ditetapkan untuk lalu lintas barang yang sepenuhnya berada di bawah pengawasan DJBC.</p></div><div><h4 class="font-semibold text-gray-800">Lartas (Larangan dan Pembatasan)</h4><p class="text-gray-600">Barang-barang yang impornya dilarang atau dibatasi dan memerlukan perizinan khusus dari instansi teknis terkait sebelum dapat diimpor.</p></div><div><h4 class="font-semibold text-gray-800">Nilai Pabean</h4><p class="text-gray-600">Nilai transaksi dari barang impor yang digunakan sebagai dasar untuk menghitung bea masuk. Umumnya menggunakan metode CIF (Cost, Insurance, Freight).</p></div><div><h4 class="font-semibold text-gray-800">Nota Pembetulan (Notul)</h4><p class="text-gray-600">Dokumen yang diterbitkan oleh Pejabat Bea Cukai untuk mengoreksi data pada PIB yang menyebabkan kekurangan atau kelebihan pembayaran pungutan negara.</p></div><div><h4 class="font-semibold text-gray-800">Pemberitahuan Ekspor Barang (PEB)</h4><p class="text-gray-600">Dokumen pabean yang digunakan untuk memberitahukan pelaksanaan ekspor barang.</p></div><div><h4 class="font-semibold text-gray-800">Pemberitahuan Impor Barang (PIB)</h4><p class="text-gray-600">Dokumen pemberitahuan yang diajukan oleh importir kepada kantor bea cukai atas barang yang diimpor, berisi detail barang, nilai, dan data lain yang menjadi dasar perhitungan pungutan negara.</p></div></div></div></div>
         </main>
     </div>
+    
+    <div id="notification" class=""></div>
 
 <script>
 // --- TRANSLATION DATA ---
