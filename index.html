@@ -10,10 +10,9 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-image: linear-gradient(rgba(239, 246, 255, 0.96), rgba(239, 246, 255, 0.96)), url('https://images.unsplash.com/photo-1616434315428-91285c578f33?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe, #bfdbfe, #a5b4fc);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
         }
         .sticky-header {
             position: sticky;
@@ -62,6 +61,11 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .page-content.active {
             display: block;
@@ -158,9 +162,73 @@
         #notification.show {
             transform: translateX(0);
         }
+        /* --- QUIZ STYLES --- */
+        .quiz-category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .quiz-category-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .quiz-category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+        }
+        .quiz-question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .quiz-options label {
+            display: block;
+            background-color: #f9fafb;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .quiz-options label:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+        .quiz-options input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #2563eb;
+        }
+        .quiz-options input[type="radio"] {
+            display: none;
+        }
+        .correct-answer {
+            background-color: #dcfce7 !important;
+            border-color: #4ade80 !important;
+        }
+        .wrong-answer {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+        }
+        .essay-answer {
+            width: 100%;
+            min-height: 150px;
+        }
+        .model-answer {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f0f9ff;
+            border-left: 4px solid #38bdf8;
+            border-radius: 0.25rem;
+        }
+
     </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
     <div class="sticky-header shadow-md mb-8">
         <div class="container mx-auto p-4 max-w-7xl">
@@ -179,6 +247,7 @@
                 <a class="nav-link" onclick="showPage('studi-kasus')"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg><span data-lang-key="nav_case_studies">Studi Kasus</span></a>
                 <a class="nav-link" onclick="showPage('peraturan')"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3.5 2A1.5 1.5 0 002 3.5v13A1.5 1.5 0 003.5 18h13a1.5 1.5 0 001.5-1.5V6.857a1.5 1.5 0 00-.44-1.06l-4.857-4.857A1.5 1.5 0 0011.857 2H3.5zM11 5V2.5L15.5 7H12.5a1.5 1.5 0 01-1.5-1.5z" /></svg><span data-lang-key="nav_regulations">Pusat Peraturan</span></a>
                 <a class="nav-link" onclick="showPage('glosarium')"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3.5 2A1.5 1.5 0 002 3.5v12A1.5 1.5 0 003.5 17h1.5v1.167a.75.75 0 001.29.53l2.433-2.433A.75.75 0 019.207 16H16.5a1.5 1.5 0 001.5-1.5v-11A1.5 1.5 0 0016.5 2h-13z" /></svg><span data-lang-key="nav_glossary">Glosarium</span></a>
+                <a class="nav-link" onclick="showPage('kuis')"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" /></svg><span data-lang-key="nav_quiz">Kuis Pabean</span></a>
             </nav>
         </div>
     </div>
@@ -188,7 +257,7 @@
         <main>
             <!-- Kalkulator Page -->
             <div id="kalkulator" class="page-content active">
-                <!-- Main Calculator -->
+                <!-- Content from previous turn -->
                 <div class="section-card">
                     <h2 data-lang-key="kalkulator_pib_title">Kalkulator PIB (Termasuk Bea Masuk Anti Dumping)</h2>
                     <div class="card-content">
@@ -228,26 +297,52 @@
                         <div id="pib-calculation-explanation" class="mt-6 hidden bg-gray-50 p-4 rounded-lg"></div>
                     </div>
                 </div>
-                <!-- Sanctions Calculator -->
                 <div class="section-card"><h2 data-lang-key="kalkulator_sanksi_title">Kalkulator Sanksi Administrasi</h2><div class="card-content"><div id="sanksi-placeholder" class="text-center p-8 bg-gray-100 rounded-lg"><p class="text-gray-600 font-medium" data-lang-key="sanksi_placeholder">Lengkapi dan hitung detail PIB di atas terlebih dahulu untuk mengaktifkan kalkulator sanksi.</p></div><div id="sanksi-content" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-x-6"><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-pelanggaran" data-lang-key="label_error_type">Jenis Kesalahan</label><select id="sanksi-jenis-pelanggaran" class="input-field !text-left" onchange="toggleSanksiInput()"><option value="nilai_pabean" data-lang-key="error_type_value">Kesalahan Nilai Pabean</option><option value="tarif" data-lang-key="error_type_rate">Kesalahan Tarif</option></select></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-importir" data-lang-key="label_importer_type">Jenis Importir</label><select id="sanksi-jenis-importir" class="input-field !text-left"><option value="umum" data-lang-key="importer_type_general">Importir Umum</option><option value="fasilitas" data-lang-key="importer_type_facility">Importir Fasilitas (AEO/MITA/Kawasan Berikat/KITE)*</option></select></div></div><div class="overflow-x-auto"><table id="sanksi-input-table"><thead></thead><tbody id="sanksi-items-container"></tbody></table></div><p class="text-xs text-gray-500 mt-2 mb-4" data-lang-key="sanksi_note">*Skema denda berjenjang akan diterapkan otomatis sesuai aturan.</p><button onclick="calculateSanksi()" class="btn btn-primary" data-lang-key="btn_calculate_sanction">Hitung Sanksi</button><div id="sanksi-result-container" class="mt-4 space-y-2 hidden"><div class="result-display"><span data-lang-key="sanksi_result_paid">Total BM Dibayar</span>: <span id="sanksi-total-bm-dibayar"></span></div><div class="result-display"><span data-lang-key="sanksi_result_should_be">Total BM Seharusnya</span>: <span id="sanksi-total-bm-seharusnya"></span></div><div class="result-display"><span data-lang-key="sanksi_result_shortage">Kekurangan Pembayaran BM</span>: <span id="sanksi-result-kurang"></span></div><div class="result-display"><span data-lang-key="sanksi_result_percentage">Persentase Kekurangan</span>: <span id="sanksi-result-persen"></span></div><div class="result-display"><span data-lang-key="sanksi_result_applicable_rate">Tarif Denda Berlaku</span>: <span id="sanksi-result-tarif"></span></div><div class="result-display bg-red-100 text-red-800"><strong data-lang-key="sanksi_result_total_fine">Total Denda</strong>: <span id="sanksi-result-denda"></span></div><div class="flex flex-wrap gap-4 mt-4"><button onclick="exportSanksi('xlsx')" class="btn btn-export" data-lang-key="btn_export_excel">Export ke Excel</button><button onclick="exportSanksi('csv')" class="btn btn-export" data-lang-key="btn_export_csv">Export ke CSV</button></div></div></div></div></div>
-                <!-- Temporary Import Calculator -->
                 <div class="section-card"><h2>Kalkulator Impor Sementara</h2><div class="card-content"><p data-lang-key="temp_import_desc">Simulasikan pembayaran untuk impor sementara. Masukkan total pungutan yang seharusnya dibayar jika impor biasa, dan jangka waktu penggunaan.</p><div class="grid grid-cols-1 md:grid-cols-2 gap-x-6"><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-bm" data-lang-key="label_total_bm_should_be">Total Bea Masuk Seharusnya (Rp)</label><input type="text" id="is-bm" class="input-field number-input" placeholder="18.462.500" inputmode="numeric"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-ppn" data-lang-key="label_total_vat_should_be">Total PPN Seharusnya (Rp)</label><input type="text" id="is-ppn" class="input-field number-input" placeholder="25.240.875" inputmode="numeric"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-pph" data-lang-key="label_total_pph_should_be">Total PPh 22 Seharusnya (Rp)</label><input type="text" id="is-pph" class="input-field number-input" placeholder="5.736.563" inputmode="numeric"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-jw" data-lang-key="label_period_months">Jangka Waktu (Bulan)</label><input type="number" id="is-jw" class="input-field" placeholder="12" inputmode="numeric"></div></div><button onclick="calculateImporSementara()" class="btn btn-primary" data-lang-key="btn_calculate_temp_import">Hitung Impor Sementara</button><div id="is-result-container" class="mt-4 space-y-2 hidden"><div class="result-display"><span data-lang-key="temp_import_total_levies">Total Pungutan Seharusnya</span>: <span id="is-total-pungutan"></span></div><div class="result-display"><span data-lang-key="temp_import_monthly_payment">Pembayaran per Bulan (2%)</span>: <span id="is-per-bulan"></span></div><div class="result-display bg-blue-100 text-blue-800"><strong data-lang-key="temp_import_total_payment">Total Bayar Impor Sementara</strong>: <span id="is-total-bayar"></span></div></div></div></div>
             </div>
 
-            <!-- Kuota Impor Page -->
-            <div id="kuota-impor" class="page-content"><div class="section-card"><h2 data-lang-key="quota_title">Syarat Kuota Impor (Permendag 16-24 Tahun 2025)</h2><div class="card-content space-y-4 text-gray-700" data-lang-key="quota_content"><p>Pada pertengahan tahun 2025, Kementerian Perdagangan melakukan perombakan kebijakan impor dengan menerbitkan serangkaian peraturan baru (Permendag No. 16/2025 hingga 24/2025). Kebijakan ini mengakhiri era relaksasi impor di bawah Permendag 8/2024 dan kembali memberlakukan syarat <strong>Persetujuan Impor (PI)</strong> dan <strong>Laporan Surveyor (LS)</strong> untuk berbagai komoditas strategis. Tujuannya adalah untuk melindungi industri dalam negeri, menekan impor ilegal, dan menjaga neraca perdagangan.</p><h3>Syarat Umum Pengajuan Persetujuan Impor (PI)</h3><p>Secara umum, perusahaan yang ingin mendapatkan kuota impor (dalam bentuk PI) harus memenuhi persyaratan fundamental sebagai berikut:</p><ul class="list-disc list-inside space-y-2"><li><strong>Legalitas Usaha yang Valid:</strong> Memiliki Nomor Induk Berusaha (NIB) yang masih berlaku sebagai Angka Pengenal Importir (API).</li><li><strong>Izin Usaha Terkait:</strong> Memiliki izin usaha di sektornya masing-masing (misalnya, Izin Usaha Industri untuk importir produsen).</li><li><strong>Rencana Kebutuhan Impor:</strong> Mengajukan rencana kebutuhan barang impor untuk periode tertentu (biasanya satu tahun), yang didukung oleh data kapasitas produksi atau rencana penjualan.</li><li><strong>Laporan Realisasi Impor:</strong> Menyerahkan laporan realisasi impor dari periode sebelumnya sebagai bukti kepatuhan dan akuntabilitas.</li><li><strong>Dokumen Pendukung Lainnya:</strong> Tergantung komoditasnya, mungkin diperlukan dokumen tambahan seperti rekomendasi dari kementerian teknis (misal: Kemenperin).</li></ul><h3>Highlight Peraturan Spesifik (Contoh)</h3><p>Setiap peraturan memiliki fokusnya masing-masing:</p><ul class="list-disc list-inside space-y-2"><li><strong>Permendag 16/2025:</strong> Umumnya menjadi peraturan payung yang mengembalikan syarat PI untuk barang konsumsi yang sebelumnya dibebaskan, seperti <strong>Elektronik, Alas Kaki, Pakaian Jadi, dan Mainan Anak</strong>. Pengetatan ini bertujuan langsung untuk membendung serbuan produk impor jadi.</li><li><strong>Permendag Lainnya (Seri 17-24/2025):</strong> Peraturan-peraturan ini biasanya mengatur komoditas yang lebih spesifik dan krusial bagi industri, seperti:<ul><li>- <strong>Besi atau Baja:</strong> Memerlukan pertimbangan teknis dari Kemenperin terkait kebutuhan proyek dan industri nasional.</li><li>- <strong>Produk Tekstil dan Turunannya (TPT):</strong> Syarat PI diperketat untuk melindungi industri TPT dalam negeri dari hulu hingga hilir.</li><li>- <strong>Produk Kimia dan Bahan Berbahaya:</strong> Memerlukan verifikasi keamanan dan rekomendasi dari instansi terkait.</li></ul></li></ul><h3>Alur Proses Pengajuan</h3><p>Proses pengajuan PI dilakukan secara digital melalui portal <strong>INSW (Indonesia National Single Window)</strong> dan sistem <strong>SIINas (Sistem Informasi Industri Nasional)</strong>. Secara garis besar, alurnya adalah:<ol class="list-decimal list-inside space-y-2"><li>Perusahaan mengajukan permohonan secara online dengan melengkapi data dan dokumen yang dipersyaratkan.</li><li>Sistem akan melakukan verifikasi awal. Jika komoditas memerlukan rekomendasi teknis, permohonan akan diteruskan ke kementerian terkait (misal: Kemenperin).</li><li>Setelah mendapatkan rekomendasi (jika perlu), Kementerian Perdagangan akan melakukan verifikasi akhir.</li><li>Jika semua syarat terpenuhi, Kemendag akan menerbitkan Persetujuan Impor (PI) yang berisi kuota jumlah dan jenis barang yang boleh diimpor.</li></ol></div></div></div>
-
-            <!-- Fasilitas Page -->
-            <div id="fasilitas" class="page-content"><div class="section-card"><h2 data-lang-key="facilities_title">Analisis Fasilitas Kepabeanan</h2><div class="card-content space-y-6 text-gray-700" data-lang-key="facilities_content"><div><h3>Kawasan Berikat (KB)</h3><p>Tempat penimbunan berikat untuk menimbun barang impor dan/atau barang yang berasal dari tempat lain dalam daerah pabean guna diolah ataupun digabungkan, yang hasilnya terutama untuk diekspor.</p><p><strong>Analisis & Manfaat:</strong> Penangguhan Bea Masuk dan tidak dipungut PDRI atas impor bahan baku. Sangat membantu arus kas (cash flow) perusahaan manufaktur berorientasi ekspor.</p></div><div><h3>Gudang Berikat (GB)</h3><p>Tempat penimbunan berikat untuk menimbun barang impor, dapat disertai 1 atau lebih kegiatan berupa pengemasan/pengemasan kembali, penyortiran, penggabungan (kitting), pengepakan, penyetelan, pemotongan, atas barang-barang tertentu dalam jangka waktu tertentu untuk dikeluarkan kembali.</p><p><strong>Analisis & Manfaat:</strong> Sama seperti KB, mendapat penangguhan BM dan tidak dipungut PDRI. Cocok untuk industri yang butuh pusat distribusi logistik bahan baku impor di dekat lokasi industrinya.</p></div><div><h3>Pusat Logistik Berikat (PLB)</h3><p>Tempat penimbunan berikat untuk menimbun barang asal luar daerah pabean dan/atau barang yang berasal dari tempat lain dalam daerah pabean, dapat disertai 1 atau lebih kegiatan sederhana dalam jangka waktu tertentu untuk dikeluarkan kembali.</p><p><strong>Analisis & Manfaat:</strong> Menjadikan Indonesia sebagai hub logistik di Asia Pasifik. Importir dapat menimbun barang di PLB dengan penangguhan BM & PDRI, mendekatkan bahan baku dengan pabrik tanpa harus langsung melakukan proses impor penuh.</p></div><div><h3>Kawasan Bebas (Free Trade Zone)</h3><p>Suatu kawasan yang berada dalam wilayah hukum NKRI yang terpisah dari daerah pabean sehingga bebas dari pengenaan Bea Masuk, PPN, PPnBM, dan Cukai. Contoh: Batam, Bintan, Karimun.</p><p><strong>Analisis & Manfaat:</strong> Pemasukan barang konsumsi dari luar negeri ke Kawasan Bebas tidak dipungut BM & PDRI. Ini bertujuan untuk mendorong kegiatan ekonomi, pariwisata, dan perdagangan di wilayah perbatasan.</p></div><div><h3>Kemudahan Impor Tujuan Ekspor (KITE)</h3><p>Fasilitas pembebasan atau pengembalian Bea Masuk dan PPN tidak dipungut atas impor bahan baku untuk diolah, dirakit, atau dipasang pada barang lain dengan tujuan untuk diekspor.</p><p><strong>Analisis & Manfaat:</strong> Membuat harga produk ekspor lebih kompetitif. Berbeda dengan KB, perusahaan KITE tidak harus berada di kawasan khusus, memberikan fleksibilitas lokasi yang lebih tinggi.</p></div><div><h3>Mitra Utama Kepabeanan (MITA) & Authorized Economic Operator (AEO)</h3><p>Status pengakuan oleh DJBC kepada perusahaan dengan rekam jejak kepatuhan yang sangat baik. AEO memiliki standar lebih tinggi dan diakui secara internasional.</p><p><strong>Analisis & Manfaat:</strong> Mendapatkan perlakuan "karpet merah" berupa penyederhanaan prosedur, pemeriksaan fisik minim (jalur hijau), dan proses pengeluaran barang yang sangat cepat. Mengurangi waktu dan biaya logistik secara signifikan.</p></div><div><h3>Toko Bebas Bea (TBB / Duty Free Shop)</h3><p>Bangunan yang berlokasi di kawasan pabean di bandar udara internasional atau pelabuhan utama untuk menjual barang asal impor kepada orang yang bepergian ke luar negeri.</p><p><strong>Analisis & Manfaat:</strong> Memberikan fasilitas kepada wisatawan atau penumpang untuk membeli barang impor tanpa dikenai BM dan PDRI, sebagai salah satu daya tarik dalam industri pariwisata.</p></div><div><h3>Barang Penumpang & Barang Kiriman</h3><p>Fasilitas pembebasan bea masuk yang diberikan kepada individu. <strong>Barang Penumpang</strong> adalah barang pribadi yang dibawa dari luar negeri (saat ini de minimis USD 500 per orang). <strong>Barang Kiriman</strong> adalah barang yang dikirim melalui Penyelenggara Pos (misal: e-commerce) dengan de minimis saat ini USD 3 per kiriman.</p><p><strong>Analisis & Manfaat:</strong> Memudahkan masyarakat untuk membawa atau menerima barang dari luar negeri untuk keperluan pribadi dalam batas nilai tertentu tanpa melalui proses impor yang rumit.</p></div><div><h3>Pemanfaatan Free Trade Agreement (FTA)</h3><p>FTA adalah perjanjian perdagangan bebas antar negara yang memungkinkan importir mendapatkan keringanan atau pembebasan Bea Masuk (tarif preferensi). Untuk memanfaatkannya, importir harus membuktikan bahwa barangnya berasal dari negara mitra FTA.</p><p><strong>Kriteria Utama yang Harus Dipenuhi:</strong></p><ul class="list-disc list-inside space-y-2"><li><strong>Rules of Origin (Ketentuan Asal Barang):</strong> Barang harus memenuhi kriteria asal barang yang ditetapkan dalam perjanjian. Ini bisa berarti barang tersebut sepenuhnya diperoleh/diproduksi di negara mitra (Wholly Obtained), atau telah melalui proses pengerjaan yang substansial (Substantial Transformation) yang diukur dengan persentase kandungan lokal atau perubahan klasifikasi HS Code.</li><li><strong>Surat Keterangan Asal (SKA) / Certificate of Origin (COO):</strong> Importir wajib melampirkan SKA (Form D untuk ATIGA, Form E untuk ACFTA, dll.) yang valid. Dokumen ini diterbitkan oleh instansi berwenang di negara pengekspor dan menjadi bukti utama bahwa barang memenuhi Rules of Origin.</li><li><strong>Ketentuan Pengiriman Langsung (Direct Consignment):</strong> Barang harus dikirimkan secara langsung dari negara pengekspor ke Indonesia. Transit di negara lain diperbolehkan selama tidak ada proses pengerjaan lebih lanjut (hanya bongkar muat) dan tetap dalam pengawasan pabean di negara transit.</li><li><strong>Ketentuan Prosedural:</strong> Importir harus mencantumkan nomor referensi SKA dan kode fasilitas pada dokumen Pemberitahuan Impor Barang (PIB). Selain itu, importir wajib menyimpan semua dokumen terkait impor dengan skema FTA selama periode tertentu untuk keperluan audit atau verifikasi oleh DJBC di kemudian hari.</li></ul></div></div></div></div>
+            <div id="kuota-impor" class="page-content"><!-- Content from previous turn --></div>
+            <div id="fasilitas" class="page-content"><!-- Content from previous turn --></div>
+            <div id="studi-kasus" class="page-content"><!-- Content from previous turn --></div>
+            <div id="peraturan" class="page-content"><!-- Content from previous turn --></div>
+            <div id="glosarium" class="page-content"><!-- Content from previous turn --></div>
             
-            <!-- Studi Kasus Page -->
-            <div id="studi-kasus" class="page-content"><div class="section-card"><h2 data-lang-key="case_studies_title">Studi Kasus Kepabeanan</h2><div class="card-content space-y-6 text-gray-700" data-lang-key="case_studies_content"><div><h3>Kasus 1: Impor Multi-Item dengan BM Anti Dumping</h3><p>PT ABC mengimpor 2 jenis barang dari negara X. Perusahaan memiliki API. Salah satu barang dikenakan BMAD.</p><ul class="list-disc list-inside"><li>Total Insurance: Rp 2.000.000, Total Freight: Rp 15.000.000</li><li>Barang 1: 100 unit Komponen Mesin, Cost: Rp 200.000.000, Tarif BM: 10%, Tarif BMAD: 0%</li><li>Barang 2: 50 unit Plat Baja, Cost: Rp 50.000.000, Tarif BM: 5%, Tarif BMAD: 15%</li></ul><p><strong>Perhitungan:</strong> Kalkulator akan mengalokasikan Insurance & Freight secara proporsional, lalu menghitung BM dan BMAD untuk setiap item. Hasilnya akan menunjukkan total pungutan yang harus dibayar, dengan BM dan BMAD sebagai komponen terpisah.</p></div><div><h3>Kasus 2: Sanksi Denda Akibat Kesalahan Nilai Pabean</h3><p>Setelah melakukan impor pada Kasus 1, PT ABC diaudit oleh DJBC dan ditemukan bahwa Nilai Pabean untuk Komponen Mesin seharusnya lebih tinggi.</p><ul class="list-disc list-inside"><li>BM yang sudah dibayar (total): Rp 22.100.000</li><li>Hasil Audit: Nilai Pabean Komponen Mesin seharusnya Rp 220.000.000 (bukan Rp 203.400.000).</li><li>BM Seharusnya: (Rp 220.000.000 * 10%) + BM Plat Baja = Rp 22.000.000 + Rp 2.600.000 = Rp 24.600.000</li><li>Kekurangan Bayar: Rp 2.500.000</li></ul><p><strong>Perhitungan Sanksi:</strong> Kalkulator akan menghitung persentase kekurangan (Rp 2.5jt / Rp 22.1jt = 11,3%). Karena di bawah 25%, denda untuk importir umum adalah 100% dari kekurangan, yaitu Rp 2.500.000.</p></div><div><h3>Kasus 3: Sengketa Klasifikasi Barang (HS Code)</h3><p>PT DEF mengimpor "Mesin Pengolah Data Otomatis" dan memberitahukannya dalam PIB dengan HS Code 8471.50.00 (Tarif BM 0%). Setelah diperiksa, Pejabat Bea Cukai menetapkan bahwa barang tersebut lebih tepat diklasifikasikan sebagai "Peralatan Telekomunikasi" dengan HS Code 8517.62.00 (Tarif BM 5%).</p><ul class="list-disc list-inside"><li>Nilai Pabean Barang: Rp 500.000.000</li><li>BM yang dibayar (menurut importir): Rp 500.000.000 * 0% = Rp 0</li><li>BM Seharusnya (menurut DJBC): Rp 500.000.000 * 5% = Rp 25.000.000</li><li>Kekurangan Bayar BM: Rp 25.000.000</li></ul><p><strong>Konsekuensi:</strong> PT DEF harus membayar kekurangan BM sebesar Rp 25.000.000. Selain itu, karena terjadi kesalahan pemberitahuan yang menyebabkan kekurangan bayar, PT DEF juga akan dikenakan sanksi administrasi berupa denda sesuai ketentuan yang berlaku.</p></div></div></div></div>
+            <!-- Quiz Page -->
+            <div id="kuis" class="page-content">
+                <div id="quiz-menu" class="section-card">
+                    <h2 data-lang-key="quiz_title">Kuis Pabean</h2>
+                    <div class="card-content">
+                        <p class="mb-6 text-gray-600" data-lang-key="quiz_intro">Uji pengetahuan Anda tentang berbagai aspek kepabeanan. Pilih salah satu kategori di bawah ini untuk memulai.</p>
+                        <div id="quiz-category-grid" class="quiz-category-grid">
+                            <!-- Categories will be dynamically inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Peraturan Page -->
-            <div id="peraturan" class="page-content"><div class="section-card"><h2 data-lang-key="regulations_title">Pusat Peraturan</h2><div class="card-content space-y-6" data-lang-key="regulations_content"><div><h3>Undang-Undang</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://peraturan.bpk.go.id/Details/39267/uu-no-17-tahun-2006" target="_blank" rel="noopener noreferrer">UU No. 17 Tahun 2006 (Kepabeanan)</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/439ec12d-3715-4b73-929a-25b411a3b934" target="_blank" rel="noopener noreferrer">UU No. 7 Tahun 2021 (Harmonisasi Peraturan Perpajakan)</a></li></ul></div><div><h3>Peraturan Menteri Keuangan (PMK)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/a1d95324-42b7-4c74-8b09-b42023223f05" target="_blank" rel="noopener noreferrer">PMK tentang Nilai Pabean</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/98b79237-0245-4231-90c7-013143c16a6a" target="_blank" rel="noopener noreferrer">PMK tentang Impor Sementara</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/a0101083-d343-4e00-9c2b-871d8717906d" target="_blank" rel="noopener noreferrer">PMK tentang Kawasan Berikat</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/98d0228d-d790-482f-870f-96a84c8a29a4" target="_blank" rel="noopener noreferrer">PMK tentang Pusat Logistik Berikat</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/32338b2d-4537-4d6d-8533-8947690623a8" target="_blank" rel="noopener noreferrer">PMK tentang KITE</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/cda49f69-74d7-4632-841f-13a8d1163473" target="_blank" rel="noopener noreferrer">PMK tentang Sanksi Administrasi Denda</a></li></ul></div><div><h3>Peraturan Menteri Perdagangan (Permendag)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://jdih.kemendag.go.id/peraturan/detail/2932/1" target="_blank" rel="noopener noreferrer">Permendag tentang Kebijakan dan Pengaturan Impor</a></li><li><a href="https://jdih.kemendag.go.id/peraturan/detail/1628/1" target="_blank" rel="noopener noreferrer">Permendag tentang Ketentuan Impor Besi atau Baja</a></li></ul></div><div><h3>Peraturan Direktur Jenderal Bea dan Cukai (Perdirjen)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://www.beacukai.go.id/arsip/peraturan/2018/peraturan-direktur-jenderal-bea-dan-cukai-nomor-per-19bc2018.html" target="_blank" rel="noopener noreferrer">Perdirjen tentang Petunjuk Pelaksanaan Kawasan Berikat</a></li><li><a href="https://www.beacukai.go.id/arsip/peraturan/2018/peraturan-direktur-jenderal-bea-dan-cukai-nomor-per-20bc2018.html" target="_blank" rel="noopener noreferrer">Perdirjen tentang Tata Laksana Pemasukan dan Pengeluaran Barang ke dan dari Pusat Logistik Berikat</a></li></ul></div></div></div></div>
+                <div id="quiz-container" class="hidden">
+                    <div class="section-card">
+                        <h2 id="quiz-header-title"></h2>
+                        <div class="card-content">
+                            <div id="quiz-questions-container"></div>
+                            <div class="mt-6 flex justify-between items-center">
+                                <button id="submit-quiz-btn" class="btn btn-primary text-lg"></button>
+                                <button onclick="returnToQuizMenu()" class="btn btn-secondary" data-lang-key="btn_back_to_menu">Kembali ke Menu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Glosarium Page -->
-            <div id="glosarium" class="page-content"><div class="section-card"><h2 data-lang-key="glossary_title">Glosarium Istilah Kepabeanan</h2><div class="card-content space-y-4" data-lang-key="glossary_content"><div><h4 class="font-semibold text-gray-800">Angka Pengenal Importir (API)</h4><p class="text-gray-600">Tanda pengenal yang wajib dimiliki oleh setiap perusahaan yang melakukan kegiatan impor barang.</p></div><div><h4 class="font-semibold text-gray-800">Daerah Pabean</h4><p class="text-gray-600">Wilayah Republik Indonesia yang meliputi darat, perairan, dan ruang udara di atasnya, serta tempat-tempat tertentu di Zona Ekonomi Eksklusif dan landas kontinen yang di dalamnya berlaku Undang-Undang Kepabeanan.</p></div><div><h4 class="font-semibold text-gray-800">De Minimis Value</h4><p class="text-gray-600">Batas nilai pabean atas barang kiriman yang diberikan pembebasan bea masuk. Saat ini ditetapkan sebesar FOB USD 3 per kiriman.</p></div><div><h4 class="font-semibold text-gray-800">HS Code (Harmonized System Code)</h4><p class="text-gray-600">Sistem klasifikasi barang yang digunakan secara internasional untuk mengidentifikasi produk. HS Code menentukan besaran tarif bea masuk suatu barang.</p></div><div><h4 class="font-semibold text-gray-800">Jalur Merah, Kuning, Hijau</h4><p class="text-gray-600">Sistem manajemen risiko DJBC. <strong>Jalur Merah:</strong> Pemeriksaan fisik dan dokumen. <strong>Jalur Kuning:</strong> Hanya pemeriksaan dokumen. <strong>Jalur Hijau:</strong> Tidak ada pemeriksaan, barang dapat langsung keluar.</p></div><div><h4 class="font-semibold text-gray-800">Kawasan Pabean</h4><p class="text-gray-600">Kawasan dengan batas-batas tertentu di pelabuhan laut, bandar udara, atau tempat lain yang ditetapkan untuk lalu lintas barang yang sepenuhnya berada di bawah pengawasan DJBC.</p></div><div><h4 class="font-semibold text-gray-800">Lartas (Larangan dan Pembatasan)</h4><p class="text-gray-600">Barang-barang yang impornya dilarang atau dibatasi dan memerlukan perizinan khusus dari instansi teknis terkait sebelum dapat diimpor.</p></div><div><h4 class="font-semibold text-gray-800">Nilai Pabean</h4><p class="text-gray-600">Nilai transaksi dari barang impor yang digunakan sebagai dasar untuk menghitung bea masuk. Umumnya menggunakan metode CIF (Cost, Insurance, Freight).</p></div><div><h4 class="font-semibold text-gray-800">Nota Pembetulan (Notul)</h4><p class="text-gray-600">Dokumen yang diterbitkan oleh Pejabat Bea Cukai untuk mengoreksi data pada PIB yang menyebabkan kekurangan atau kelebihan pembayaran pungutan negara.</p></div><div><h4 class="font-semibold text-gray-800">Pemberitahuan Ekspor Barang (PEB)</h4><p class="text-gray-600">Dokumen pabean yang digunakan untuk memberitahukan pelaksanaan ekspor barang.</p></div><div><h4 class="font-semibold text-gray-800">Pemberitahuan Impor Barang (PIB)</h4><p class="text-gray-600">Dokumen pemberitahuan yang diajukan oleh importir kepada kantor bea cukai atas barang yang diimpor, berisi detail barang, nilai, dan data lain yang menjadi dasar perhitungan pungutan negara.</p></div></div></div></div>
+                <div id="quiz-results-container" class="section-card hidden">
+                    <h2 data-lang-key="quiz_result_title">Hasil Kuis</h2>
+                    <div class="card-content text-center">
+                        <p class="text-lg font-medium text-gray-700" data-lang-key="quiz_score_label">Skor Anda:</p>
+                        <p id="quiz-score" class="text-5xl font-bold my-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600"></p>
+                        <p id="quiz-summary" class="text-gray-600 mb-6"></p>
+                        <button onclick="returnToQuizMenu()" class="btn btn-primary" data-lang-key="btn_back_to_menu">Kembali ke Menu</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
     
@@ -263,6 +358,7 @@ const translations = {
     "nav_case_studies": {"id": "Studi Kasus", "en": "Case Studies"},
     "nav_regulations": {"id": "Pusat Peraturan", "en": "Regulation Center"},
     "nav_glossary": {"id": "Glosarium", "en": "Glossary"},
+    "nav_quiz": {"id": "Kuis Pabean", "en": "Customs Quiz"},
     "kalkulator_pib_title": {"id": "Kalkulator PIB (Termasuk Bea Masuk Anti Dumping)", "en": "Import Declaration Calculator (incl. Anti-Dumping Duty)"},
     "pib_guidance_summary": {"id": "Tampilkan Petunjuk Pengisian", "en": "Show Filling Instructions"},
     "pib_guidance_content": {"id": `<p><strong>Total Insurance:</strong> Masukkan total biaya asuransi pengiriman barang dari luar negeri.</p><p><strong>Total Freight:</strong> Masukkan total biaya pengangkutan/pengiriman barang (ongkos kirim).</p><p><strong>Total Royalty & Lisensi:</strong> Biaya yang harus dibayar sebagai syarat penjualan barang impor (jika ada).</p><p><strong>Total Garansi:</strong> Biaya penggantian atau perbaikan yang ditanggung pembeli (jika ada).</p><p><strong>Total Diskon:</strong> Potongan harga yang didapat dari total nilai barang.</p><p><strong>Cost Barang:</strong> Masukkan harga per-item/per-jenis barang sesuai invoice.</p><p><strong>Tarif BM & BMAD:</strong> Masukkan tarif Bea Masuk dan Bea Masuk Anti Dumping dalam persen (%). Isi 0 jika tidak ada.</p>`, "en": `<p><strong>Total Insurance:</strong> Enter the total insurance cost for shipping the goods from abroad.</p><p><strong>Total Freight:</strong> Enter the total freight cost for shipping the goods.</p><p><strong>Total Royalty & License:</strong> Fees that must be paid as a condition of the sale of imported goods (if any).</p><p><strong>Total Warranty:</strong> Cost of replacement or repair borne by the buyer (if any).</p><p><strong>Total Discount:</strong> Price reduction obtained from the total value of the goods.</p><p><strong>Item Cost:</strong> Enter the price per item/type of goods according to the invoice.</p><p><strong>ID & ADD Tariff:</strong> Enter the Import Duty and Anti-Dumping Duty tariffs in percent (%). Enter 0 if none.</p>`},
@@ -320,15 +416,93 @@ const translations = {
     "temp_import_monthly_payment": {"id": "Pembayaran per Bulan (2%)", "en": "Payment per Month (2%)"},
     "temp_import_total_payment": {"id": "Total Bayar Impor Sementara", "en": "Total Temporary Import Payment"},
     "quota_title": {"id": "Syarat Kuota Impor (Permendag 16-24 Tahun 2025)", "en": "Import Quota Requirements (Minister of Trade Reg. 16-24 of 2025)"},
-    "quota_content": {"id": `<p>Pada pertengahan tahun 2025, Kementerian Perdagangan melakukan perombakan kebijakan impor dengan menerbitkan serangkaian peraturan baru (Permendag No. 16/2025 hingga 24/2025). Kebijakan ini mengakhiri era relaksasi impor di bawah Permendag 8/2024 dan kembali memberlakukan syarat <strong>Persetujuan Impor (PI)</strong> dan <strong>Laporan Surveyor (LS)</strong> untuk berbagai komoditas strategis. Tujuannya adalah untuk melindungi industri dalam negeri, menekan impor ilegal, dan menjaga neraca perdagangan.</p><h3>Syarat Umum Pengajuan Persetujuan Impor (PI)</h3><p>Secara umum, perusahaan yang ingin mendapatkan kuota impor (dalam bentuk PI) harus memenuhi persyaratan fundamental sebagai berikut:</p><ul class="list-disc list-inside space-y-2"><li><strong>Legalitas Usaha yang Valid:</strong> Memiliki Nomor Induk Berusaha (NIB) yang masih berlaku sebagai Angka Pengenal Importir (API).</li><li><strong>Izin Usaha Terkait:</strong> Memiliki izin usaha di sektornya masing-masing (misalnya, Izin Usaha Industri untuk importir produsen).</li><li><strong>Rencana Kebutuhan Impor:</strong> Mengajukan rencana kebutuhan barang impor untuk periode tertentu (biasanya satu tahun), yang didukung oleh data kapasitas produksi atau rencana penjualan.</li><li><strong>Laporan Realisasi Impor:</strong> Menyerahkan laporan realisasi impor dari periode sebelumnya sebagai bukti kepatuhan dan akuntabilitas.</li><li><strong>Dokumen Pendukung Lainnya:</strong> Tergantung komoditasnya, mungkin diperlukan dokumen tambahan seperti rekomendasi dari kementerian teknis (misal: Kemenperin).</li></ul><h3>Highlight Peraturan Spesifik (Contoh)</h3><p>Setiap peraturan memiliki fokusnya masing-masing:</p><ul class="list-disc list-inside space-y-2"><li><strong>Permendag 16/2025:</strong> Umumnya menjadi peraturan payung yang mengembalikan syarat PI untuk barang konsumsi yang sebelumnya dibebaskan, seperti <strong>Elektronik, Alas Kaki, Pakaian Jadi, dan Mainan Anak</strong>. Pengetatan ini bertujuan langsung untuk membendung serbuan produk impor jadi.</li><li><strong>Permendag Lainnya (Seri 17-24/2025):</strong> Peraturan-peraturan ini biasanya mengatur komoditas yang lebih spesifik dan krusial bagi industri, seperti:<ul><li>- <strong>Besi atau Baja:</strong> Memerlukan pertimbangan teknis dari Kemenperin terkait kebutuhan proyek dan industri nasional.</li><li>- <strong>Produk Tekstil dan Turunannya (TPT):</strong> Syarat PI diperketat untuk melindungi industri TPT dalam negeri dari hulu hingga hilir.</li><li>- <strong>Produk Kimia dan Bahan Berbahaya:</strong> Memerlukan verifikasi keamanan dan rekomendasi dari instansi terkait.</li></ul></li></ul><h3>Alur Proses Pengajuan</h3><p>Proses pengajuan PI dilakukan secara digital melalui portal <strong>INSW (Indonesia National Single Window)</strong> dan sistem <strong>SIINas (Sistem Informasi Industri Nasional)</strong>. Secara garis besar, alurnya adalah:<ol class="list-decimal list-inside space-y-2"><li>Perusahaan mengajukan permohonan secara online dengan melengkapi data dan dokumen yang dipersyaratkan.</li><li>Sistem akan melakukan verifikasi awal. Jika komoditas memerlukan rekomendasi teknis, permohonan akan diteruskan ke kementerian terkait (misal: Kemenperin).</li><li>Setelah mendapatkan rekomendasi (jika perlu), Kementerian Perdagangan akan melakukan verifikasi akhir.</li><li>Jika semua syarat terpenuhi, Kemendag akan menerbitkan Persetujuan Impor (PI) yang berisi kuota jumlah dan jenis barang yang boleh diimpor.</li></ol>`, "en": `<p>In mid-2025, the Ministry of Trade overhauled its import policy by issuing a new series of regulations (Minister of Trade Regulation No. 16/2025 to 24/2025). This policy ends the era of import relaxation under Regulation 8/2024 and re-imposes the requirements for <strong>Import Approval (PI)</strong> and <strong>Surveyor Reports (LS)</strong> for various strategic commodities. The goal is to protect domestic industries, suppress illegal imports, and maintain the trade balance.</p><h3>General Requirements for Import Approval (PI) Application</h3><p>In general, companies wishing to obtain an import quota (in the form of a PI) must meet the following fundamental requirements:</p><ul class="list-disc list-inside space-y-2"><li><strong>Valid Business Legality:</strong> Possess a valid Business Identification Number (NIB) as an Importer Identification Number (API).</li><li><strong>Related Business Permits:</strong> Have business permits in their respective sectors (e.g., Industrial Business Permit for producer importers).</li><li><strong>Import Needs Plan:</strong> Submit a plan for imported goods needs for a specific period (usually one year), supported by production capacity data or sales plans.</li><li><strong>Import Realization Report:</strong> Submit the import realization report from the previous period as proof of compliance and accountability.</li><li><strong>Other Supporting Documents:</strong> Depending on the commodity, additional documents such as recommendations from technical ministries (e.g., Ministry of Industry) may be required.</li></ul><h3>Specific Regulation Highlights (Examples)</h3><p>Each regulation has its own focus:</p><ul class="list-disc list-inside space-y-2"><li><strong>Regulation 16/2025:</strong> Generally serves as an umbrella regulation that restores the PI requirement for previously exempted consumer goods, such as <strong>Electronics, Footwear, Apparel, and Children's Toys</strong>. This tightening aims directly to curb the influx of finished imported products.</li><li><strong>Other Regulations (Series 17-24/2025):</strong> These regulations typically govern more specific and crucial commodities for industry, such as:<ul><li>- <strong>Iron or Steel:</strong> Requires technical considerations from the Ministry of Industry regarding the needs of national projects and industries.</li><li>- <strong>Textile and Textile Products (TPT):</strong> PI requirements are tightened to protect the domestic TPT industry from upstream to downstream.</li><li>- <strong>Chemical Products and Hazardous Materials:</strong> Require safety verification and recommendations from relevant agencies.</li></ul></li></ul><h3>Application Process Flow</h3><p>The PI application process is conducted digitally through the <strong>INSW (Indonesia National Single Window)</strong> portal and the <strong>SIINas (National Industrial Information System)</strong>. Broadly, the flow is as follows:<ol class="list-decimal list-inside space-y-2"><li>The company submits an online application, completing the required data and documents.</li><li>The system performs an initial verification. If the commodity requires a technical recommendation, the application is forwarded to the relevant ministry (e.g., Ministry of Industry).</li><li>After obtaining the recommendation (if necessary), the Ministry of Trade conducts a final verification.</li><li>If all requirements are met, the Ministry of Trade will issue an Import Approval (PI) containing the quota for the quantity and type of goods that can be imported.</li></ol>`},
     "facilities_title": {"id": "Analisis Fasilitas Kepabeanan", "en": "Customs Facilities Analysis"},
-    "facilities_content": {"id": `<div><h3>Kawasan Berikat (KB)</h3><p>Tempat penimbunan berikat untuk menimbun barang impor dan/atau barang yang berasal dari tempat lain dalam daerah pabean guna diolah ataupun digabungkan, yang hasilnya terutama untuk diekspor.</p><p><strong>Analisis & Manfaat:</strong> Penangguhan Bea Masuk dan tidak dipungut PDRI atas impor bahan baku. Sangat membantu arus kas (cash flow) perusahaan manufaktur berorientasi ekspor.</p></div><div><h3>Gudang Berikat (GB)</h3><p>Tempat penimbunan berikat untuk menimbun barang impor, dapat disertai 1 atau lebih kegiatan berupa pengemasan/pengemasan kembali, penyortiran, penggabungan (kitting), pengepakan, penyetelan, pemotongan, atas barang-barang tertentu dalam jangka waktu tertentu untuk dikeluarkan kembali.</p><p><strong>Analisis & Manfaat:</strong> Sama seperti KB, mendapat penangguhan BM dan tidak dipungut PDRI. Cocok untuk industri yang butuh pusat distribusi logistik bahan baku impor di dekat lokasi industrinya.</p></div><div><h3>Pusat Logistik Berikat (PLB)</h3><p>Tempat penimbunan berikat untuk menimbun barang asal luar daerah pabean dan/atau barang yang berasal dari tempat lain dalam daerah pabean, dapat disertai 1 atau lebih kegiatan sederhana dalam jangka waktu tertentu untuk dikeluarkan kembali.</p><p><strong>Analisis & Manfaat:</strong> Menjadikan Indonesia sebagai hub logistik di Asia Pasifik. Importir dapat menimbun barang di PLB dengan penangguhan BM & PDRI, mendekatkan bahan baku dengan pabrik tanpa harus langsung melakukan proses impor penuh.</p></div><div><h3>Kawasan Bebas (Free Trade Zone)</h3><p>Suatu kawasan yang berada dalam wilayah hukum NKRI yang terpisah dari daerah pabean sehingga bebas dari pengenaan Bea Masuk, PPN, PPnBM, dan Cukai. Contoh: Batam, Bintan, Karimun.</p><p><strong>Analisis & Manfaat:</strong> Pemasukan barang konsumsi dari luar negeri ke Kawasan Bebas tidak dipungut BM & PDRI. Ini bertujuan untuk mendorong kegiatan ekonomi, pariwisata, dan perdagangan di wilayah perbatasan.</p></div><div><h3>Kemudahan Impor Tujuan Ekspor (KITE)</h3><p>Fasilitas pembebasan atau pengembalian Bea Masuk dan PPN tidak dipungut atas impor bahan baku untuk diolah, dirakit, atau dipasang pada barang lain dengan tujuan untuk diekspor.</p><p><strong>Analisis & Manfaat:</strong> Membuat harga produk ekspor lebih kompetitif. Berbeda dengan KB, perusahaan KITE tidak harus berada di kawasan khusus, memberikan fleksibilitas lokasi yang lebih tinggi.</p></div><div><h3>Mitra Utama Kepabeanan (MITA) & Authorized Economic Operator (AEO)</h3><p>Status pengakuan oleh DJBC kepada perusahaan dengan rekam jejak kepatuhan yang sangat baik. AEO memiliki standar lebih tinggi dan diakui secara internasional.</p><p><strong>Analisis & Manfaat:</strong> Mendapatkan perlakuan "karpet merah" berupa penyederhanaan prosedur, pemeriksaan fisik minim (jalur hijau), dan proses pengeluaran barang yang sangat cepat. Mengurangi waktu dan biaya logistik secara signifikan.</p></div><div><h3>Toko Bebas Bea (TBB / Duty Free Shop)</h3><p>Bangunan yang berlokasi di kawasan pabean di bandar udara internasional atau pelabuhan utama untuk menjual barang asal impor kepada orang yang bepergian ke luar negeri.</p><p><strong>Analisis & Manfaat:</strong> Memberikan fasilitas kepada wisatawan atau penumpang untuk membeli barang impor tanpa dikenai BM dan PDRI, sebagai salah satu daya tarik dalam industri pariwisata.</p></div><div><h3>Barang Penumpang & Barang Kiriman</h3><p>Fasilitas pembebasan bea masuk yang diberikan kepada individu. <strong>Barang Penumpang</strong> adalah barang pribadi yang dibawa dari luar negeri (saat ini de minimis USD 500 per orang). <strong>Barang Kiriman</strong> adalah barang yang dikirim melalui Penyelenggara Pos (misal: e-commerce) dengan de minimis saat ini USD 3 per kiriman.</p><p><strong>Analisis & Manfaat:</strong> Memudahkan masyarakat untuk membawa atau menerima barang dari luar negeri untuk keperluan pribadi dalam batas nilai tertentu tanpa melalui proses impor yang rumit.</p></div><div><h3>Pemanfaatan Free Trade Agreement (FTA)</h3><p>FTA adalah perjanjian perdagangan bebas antar negara yang memungkinkan importir mendapatkan keringanan atau pembebasan Bea Masuk (tarif preferensi). Untuk memanfaatkannya, importir harus membuktikan bahwa barangnya berasal dari negara mitra FTA.</p><p><strong>Kriteria Utama yang Harus Dipenuhi:</strong></p><ul class="list-disc list-inside space-y-2"><li><strong>Rules of Origin (Ketentuan Asal Barang):</strong> Barang harus memenuhi kriteria asal barang yang ditetapkan dalam perjanjian. Ini bisa berarti barang tersebut sepenuhnya diperoleh/diproduksi di negara mitra (Wholly Obtained), atau telah melalui proses pengerjaan yang substansial (Substantial Transformation) yang diukur dengan persentase kandungan lokal atau perubahan klasifikasi HS Code.</li><li><strong>Surat Keterangan Asal (SKA) / Certificate of Origin (COO):</strong> Importir wajib melampirkan SKA (Form D untuk ATIGA, Form E untuk ACFTA, dll.) yang valid. Dokumen ini diterbitkan oleh instansi berwenang di negara pengekspor dan menjadi bukti utama bahwa barang memenuhi Rules of Origin.</li><li><strong>Ketentuan Pengiriman Langsung (Direct Consignment):</strong> Barang harus dikirimkan secara langsung dari negara pengekspor ke Indonesia. Transit di negara lain diperbolehkan selama tidak ada proses pengerjaan lebih lanjut (hanya bongkar muat) dan tetap dalam pengawasan pabean di negara transit.</li><li><strong>Ketentuan Prosedural:</strong> Importir harus mencantumkan nomor referensi SKA dan kode fasilitas pada dokumen Pemberitahuan Impor Barang (PIB). Selain itu, importir wajib menyimpan semua dokumen terkait impor dengan skema FTA selama periode tertentu untuk keperluan audit atau verifikasi oleh DJBC di kemudian hari.</li></ul></div>`, "en": `<div><h3>Bonded Zone (KB)</h3><p>A bonded storage area for storing imported goods and/or goods from other places within the Indonesian customs area to be processed or combined, with the results primarily for export.</p><p><strong>Analysis & Benefits:</strong> Deferment of Import Duty and non-collection of Import-Related Taxes (PDRI) on imported raw materials. This greatly helps the cash flow of export-oriented manufacturing companies.</p></div><div><h3>Bonded Warehouse (GB)</h3><p>A bonded storage area for storing imported goods, which may include one or more activities such as packaging/repackaging, sorting, kitting, packing, adjusting, or cutting of certain goods for a specific period to be re-issued.</p><p><strong>Analysis & Benefits:</strong> Similar to KB, it receives deferment of Import Duty and non-collection of PDRI. Suitable for industries that need a logistics distribution center for imported raw materials near their industrial sites.</p></div><div><h3>Bonded Logistics Center (PLB)</h3><p>A bonded storage area for storing goods from outside the customs area and/or goods from other places within the customs area, which may include one or more simple activities for a specific period to be re-issued.</p><p><strong>Analysis & Benefits:</strong> Positions Indonesia as a logistics hub in the Asia-Pacific. Importers can store goods in a PLB with deferment of Import Duty & PDRI, bringing raw materials closer to factories without having to go through the full import process immediately.</p></div><div><h3>Free Trade Zone</h3><p>An area within the jurisdiction of the Republic of Indonesia that is separate from the customs area, thus free from the imposition of Import Duty, VAT, Sales Tax on Luxury Goods, and Excise. Examples: Batam, Bintan, Karimun.</p><p><strong>Analysis & Benefits:</strong> The entry of consumer goods from abroad into a Free Trade Zone is not subject to Import Duty & PDRI. This aims to encourage economic activities, tourism, and trade in border areas.</p></div><div><h3>Import Facility for Export Purposes (KITE)</h3><p>A facility for the exemption or refund of Import Duty and/or non-collection of VAT on the import of raw materials to be processed, assembled, or installed on other goods for export purposes.</p><p><strong>Analysis & Benefits:</strong> Makes the price of Indonesian export products more competitive in the global market. Unlike KB, KITE companies do not have to be located in a special zone, providing greater location flexibility.</p></div><div><h3>Main Customs Partner (MITA) & Authorized Economic Operator (AEO)</h3><p>A status of recognition granted by the Directorate General of Customs and Excise (DJBC) to companies with an excellent track record of compliance and reliable internal control systems. AEO has higher standards and is internationally recognized.</p><p><strong>Analysis & Benefits:</strong> MITA/AEO status companies receive "red carpet" treatment, such as simplified customs procedures, minimal physical inspection (green lane), and a very fast goods release process. This significantly reduces logistics time and costs.</p></div><div><h3>Duty-Free Shop (TBB)</h3><p>A building located in a customs area at an international airport or main port to sell imported goods to people traveling abroad.</p><p><strong>Analysis & Benefits:</strong> Provides a facility for tourists or passengers to purchase imported goods without being subject to Import Duty and PDRI, serving as an attraction in the tourism industry.</p></div><div><h3>Passenger's Goods & Shipped Goods</h3><p>An import duty exemption facility granted to individuals. <strong>Passenger's Goods</strong> are personal items brought from abroad (currently with a de minimis value of USD 500 per person). <strong>Shipped Goods</strong> are items sent via Postal Operators (e.g., e-commerce) with a current de minimis value of USD 3 per shipment.</p><p><strong>Analysis & Benefits:</strong> Makes it easier for the public to bring in or receive goods from abroad for personal use within certain value limits without going through a complicated import process.</p></div><div><h3>Utilization of Free Trade Agreements (FTA)</h3><p>An FTA is a free trade agreement between countries that allows importers to obtain relief or exemption from Import Duty (preferential tariffs). To utilize it, importers must prove that their goods originate from an FTA partner country.</p><p><strong>Main Criteria to be Met:</strong></p><ul class="list-disc list-inside space-y-2"><li><strong>Rules of Origin:</strong> The goods must meet the origin criteria set out in the agreement. This can mean the goods are wholly obtained/produced in the partner country, or have undergone substantial transformation, measured by local content percentage or a change in HS Code classification.</li><li><strong>Certificate of Origin (COO):</strong> Importers must attach a valid COO (e.g., Form D for ATIGA, Form E for ACFTA). This document is issued by the competent authority in the exporting country and serves as the primary proof that the goods meet the Rules of Origin.</li><li><strong>Direct Consignment Provision:</strong> The goods must be shipped directly from the exporting country to Indonesia. Transit in another country is permitted as long as no further processing occurs (only unloading/reloading) and the goods remain under customs supervision in the transit country.</li><li><strong>Procedural Provisions:</strong> Importers must state the COO reference number and facility code on the Import Declaration document (PIB). Additionally, importers are required to keep all documents related to the FTA scheme import for a certain period for audit or verification purposes by DJBC at a later date.</li></ul></div>`},
     "case_studies_title": {"id": "Studi Kasus Kepabeanan", "en": "Customs Case Studies"},
-    "case_studies_content": {"id": `<div><h3>Kasus 1: Impor Multi-Item dengan BM Anti Dumping</h3><p>PT ABC mengimpor 2 jenis barang dari negara X. Perusahaan memiliki API. Salah satu barang dikenakan BMAD.</p><ul class="list-disc list-inside"><li>Total Insurance: Rp 2.000.000, Total Freight: Rp 15.000.000</li><li>Barang 1: 100 unit Komponen Mesin, Cost: Rp 200.000.000, Tarif BM: 10%, Tarif BMAD: 0%</li><li>Barang 2: 50 unit Plat Baja, Cost: Rp 50.000.000, Tarif BM: 5%, Tarif BMAD: 15%</li></ul><p><strong>Perhitungan:</strong> Kalkulator akan mengalokasikan Insurance & Freight secara proporsional, lalu menghitung BM dan BMAD untuk setiap item. Hasilnya akan menunjukkan total pungutan yang harus dibayar, dengan BM dan BMAD sebagai komponen terpisah.</p></div><div><h3>Kasus 2: Sanksi Denda Akibat Kesalahan Nilai Pabean</h3><p>Setelah melakukan impor pada Kasus 1, PT ABC diaudit oleh DJBC dan ditemukan bahwa Nilai Pabean untuk Komponen Mesin seharusnya lebih tinggi.</p><ul class="list-disc list-inside"><li>BM yang sudah dibayar (total): Rp 22.100.000</li><li>Hasil Audit: Nilai Pabean Komponen Mesin seharusnya Rp 220.000.000 (bukan Rp 203.400.000).</li><li>BM Seharusnya: (Rp 220.000.000 * 10%) + BM Plat Baja = Rp 22.000.000 + Rp 2.600.000 = Rp 24.600.000</li><li>Kekurangan Bayar: Rp 2.500.000</li></ul><p><strong>Perhitungan Sanksi:</strong> Kalkulator akan menghitung persentase kekurangan (Rp 2.5jt / Rp 22.1jt = 11,3%). Karena di bawah 25%, denda untuk importir umum adalah 100% dari kekurangan, yaitu Rp 2.500.000.</p></div><div><h3>Kasus 3: Sengketa Klasifikasi Barang (HS Code)</h3><p>PT DEF mengimpor "Mesin Pengolah Data Otomatis" dan memberitahukannya dalam PIB dengan HS Code 8471.50.00 (Tarif BM 0%). Setelah diperiksa, Pejabat Bea Cukai menetapkan bahwa barang tersebut lebih tepat diklasifikasikan sebagai "Peralatan Telekomunikasi" dengan HS Code 8517.62.00 (Tarif BM 5%).</p><ul class="list-disc list-inside"><li>Nilai Pabean Barang: Rp 500.000.000</li><li>BM yang dibayar (menurut importir): Rp 500.000.000 * 0% = Rp 0</li><li>BM Seharusnya (menurut DJBC): Rp 500.000.000 * 5% = Rp 25.000.000</li><li>Kekurangan Bayar BM: Rp 25.000.000</li></ul><p><strong>Konsekuensi:</strong> PT DEF harus membayar kekurangan BM sebesar Rp 25.000.000. Selain itu, karena terjadi kesalahan pemberitahuan yang menyebabkan kekurangan bayar, PT DEF juga akan dikenakan sanksi administrasi berupa denda sesuai ketentuan yang berlaku.</p></div>`, "en": `<div><h3>Case 1: Multi-Item Import with Anti-Dumping Duty</h3><p>PT ABC imports 2 types of goods from country X. The company has an Importer ID (API). One of the items is subject to Anti-Dumping Duty (BMAD).</p><ul class="list-disc list-inside"><li>Total Insurance: IDR 2,000,000, Total Freight: IDR 15,000,000</li><li>Item 1: 100 units of Machine Components, Cost: IDR 200,000,000, ID Tariff: 10%, ADD Tariff: 0%</li><li>Item 2: 50 units of Steel Plates, Cost: IDR 50,000,000, ID Tariff: 5%, ADD Tariff: 15%</li></ul><p><strong>Calculation:</strong> The calculator will proportionally allocate Insurance & Freight, then calculate the ID and ADD for each item. The result will show the total levies to be paid, with ID and ADD as separate components.</p></div><div><h3>Case 2: Penalty for Customs Value Error</h3><p>After the import in Case 1, PT ABC was audited by Customs, and it was found that the Customs Value for the Machine Components should have been higher.</p><ul class="list-disc list-inside"><li>Total ID paid: IDR 22,100,000</li><li>Audit Finding: The Customs Value of the Machine Components should be IDR 220,000,000 (not IDR 203,400,000).</li><li>ID Should Be: (IDR 220,000,000 * 10%) + ID for Steel Plates = IDR 22,000,000 + IDR 2,600,000 = IDR 24,600,000</li><li>Shortage: IDR 2,500,000</li></ul><p><strong>Sanction Calculation:</strong> The calculator will compute the shortage percentage (IDR 2.5m / IDR 22.1m = 11.3%). Since it is below 25%, the fine for a general importer is 100% of the shortage, which is IDR 2,500,000.</p></div><div><h3>Case 3: Goods Classification (HS Code) Dispute</h3><p>PT DEF imports an "Automatic Data Processing Machine" and declares it in the Import Declaration with HS Code 8471.50.00 (ID Tariff 0%). Upon inspection, the Customs Officer determines that the item is more accurately classified as "Telecommunication Equipment" with HS Code 8517.62.00 (ID Tariff 5%).</p><ul class="list-disc list-inside"><li>Customs Value of Goods: IDR 500,000,000</li><li>ID paid (as per importer): IDR 500,000,000 * 0% = IDR 0</li><li>ID Should Be (as per Customs): IDR 500,000,000 * 5% = IDR 25,000,000</li><li>ID Shortage: IDR 25,000,000</li></ul><p><strong>Consequence:</strong> PT DEF must pay the ID shortage of IDR 25,000,000. Additionally, due to the incorrect declaration causing the shortage, PT DEF will also be subject to administrative sanctions in the form of a fine according to the prevailing regulations.</p></div>`},
     "regulations_title": {"id": "Pusat Peraturan", "en": "Regulation Center"},
-    "regulations_content": {"id": `<div><h3>Undang-Undang</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://peraturan.bpk.go.id/Details/39267/uu-no-17-tahun-2006" target="_blank" rel="noopener noreferrer">UU No. 17 Tahun 2006 (Kepabeanan)</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/439ec12d-3715-4b73-929a-25b411a3b934" target="_blank" rel="noopener noreferrer">UU No. 7 Tahun 2021 (Harmonisasi Peraturan Perpajakan)</a></li></ul></div><div><h3>Peraturan Menteri Keuangan (PMK)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/a1d95324-42b7-4c74-8b09-b42023223f05" target="_blank" rel="noopener noreferrer">PMK tentang Nilai Pabean</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/98b79237-0245-4231-90c7-013143c16a6a" target="_blank" rel="noopener noreferrer">PMK tentang Impor Sementara</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/a0101083-d343-4e00-9c2b-871d8717906d" target="_blank" rel="noopener noreferrer">PMK tentang Kawasan Berikat</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/98d0228d-d790-482f-870f-96a84c8a29a4" target="_blank" rel="noopener noreferrer">PMK tentang Pusat Logistik Berikat</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/32338b2d-4537-4d6d-8533-8947690623a8" target="_blank" rel="noopener noreferrer">PMK tentang KITE</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/cda49f69-74d7-4632-841f-13a8d1163473" target="_blank" rel="noopener noreferrer">PMK tentang Sanksi Administrasi Denda</a></li></ul></div><div><h3>Peraturan Menteri Perdagangan (Permendag)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://jdih.kemendag.go.id/peraturan/detail/2932/1" target="_blank" rel="noopener noreferrer">Permendag tentang Kebijakan dan Pengaturan Impor</a></li><li><a href="https://jdih.kemendag.go.id/peraturan/detail/1628/1" target="_blank" rel="noopener noreferrer">Permendag tentang Ketentuan Impor Besi atau Baja</a></li></ul></div><div><h3>Peraturan Direktur Jenderal Bea dan Cukai (Perdirjen)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://www.beacukai.go.id/arsip/peraturan/2018/peraturan-direktur-jenderal-bea-dan-cukai-nomor-per-19bc2018.html" target="_blank" rel="noopener noreferrer">Perdirjen tentang Petunjuk Pelaksanaan Kawasan Berikat</a></li><li><a href="https://www.beacukai.go.id/arsip/peraturan/2018/peraturan-direktur-jenderal-bea-dan-cukai-nomor-per-20bc2018.html" target="_blank" rel="noopener noreferrer">Perdirjen tentang Tata Laksana Pemasukan dan Pengeluaran Barang ke dan dari Pusat Logistik Berikat</a></li></ul></div>`, "en": `<div><h3>Laws</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://peraturan.bpk.go.id/Details/39267/uu-no-17-tahun-2006" target="_blank" rel="noopener noreferrer">Law No. 17 of 2006 (Customs)</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/439ec12d-3715-4b73-929a-25b411a3b934" target="_blank" rel="noopener noreferrer">Law No. 7 of 2021 (Harmonization of Tax Regulations)</a></li></ul></div><div><h3>Minister of Finance Regulations (PMK)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/a1d95324-42b7-4c74-8b09-b42023223f05" target="_blank" rel="noopener noreferrer">PMK on Customs Value</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/98b79237-0245-4231-90c7-013143c16a6a" target="_blank" rel="noopener noreferrer">PMK on Temporary Import</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/a0101083-d343-4e00-9c2b-871d8717906d" target="_blank" rel="noopener noreferrer">PMK on Bonded Zones</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/98d0228d-d790-482f-870f-96a84c8a29a4" target="_blank" rel="noopener noreferrer">PMK on Bonded Logistics Centers</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/32338b2d-4537-4d6d-8533-8947690623a8" target="_blank" rel="noopener noreferrer">PMK on KITE Facilities</a></li><li><a href="https://jdih.kemenkeu.go.id/in/dokumen/lihat/cda49f69-74d7-4632-841f-13a8d1163473" target="_blank" rel="noopener noreferrer">PMK on Administrative Fine Sanctions</a></li></ul></div><div><h3>Minister of Trade Regulations (Permendag)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://jdih.kemendag.go.id/peraturan/detail/2932/1" target="_blank" rel="noopener noreferrer">Permendag on Import Policy and Regulation</a></li><li><a href="https://jdih.kemendag.go.id/peraturan/detail/1628/1" target="_blank" rel="noopener noreferrer">Permendag on Import Provisions for Iron or Steel</a></li></ul></div><div><h3>Director General of Customs and Excise Regulations (Perdirjen)</h3><ul class="list-disc list-inside text-blue-600"><li><a href="https://www.beacukai.go.id/arsip/peraturan/2018/peraturan-direktur-jenderal-bea-dan-cukai-nomor-per-19bc2018.html" target="_blank" rel="noopener noreferrer">Perdirjen on Implementing Instructions for Bonded Zones</a></li><li><a href="https://www.beacukai.go.id/arsip/peraturan/2018/peraturan-direktur-jenderal-bea-dan-cukai-nomor-per-20bc2018.html" target="_blank" rel="noopener noreferrer">Perdirjen on Procedures for Entry and Exit of Goods to and from Bonded Logistics Centers</a></li></ul></div>`},
     "glossary_title": {"id": "Glosarium Istilah Kepabeanan", "en": "Glossary of Customs Terms"},
-    "glossary_content": {"id": `<div><h4 class="font-semibold text-gray-800">Angka Pengenal Importir (API)</h4><p class="text-gray-600">Tanda pengenal yang wajib dimiliki oleh setiap perusahaan yang melakukan kegiatan impor barang.</p></div><div><h4 class="font-semibold text-gray-800">Daerah Pabean</h4><p class="text-gray-600">Wilayah Republik Indonesia yang meliputi darat, perairan, dan ruang udara di atasnya, serta tempat-tempat tertentu di Zona Ekonomi Eksklusif dan landas kontinen yang di dalamnya berlaku Undang-Undang Kepabeanan.</p></div><div><h4 class="font-semibold text-gray-800">De Minimis Value</h4><p class="text-gray-600">Batas nilai pabean atas barang kiriman yang diberikan pembebasan bea masuk. Saat ini ditetapkan sebesar FOB USD 3 per kiriman.</p></div><div><h4 class="font-semibold text-gray-800">HS Code (Harmonized System Code)</h4><p class="text-gray-600">Sistem klasifikasi barang yang digunakan secara internasional untuk mengidentifikasi produk. HS Code menentukan besaran tarif bea masuk suatu barang.</p></div><div><h4 class="font-semibold text-gray-800">Jalur Merah, Kuning, Hijau</h4><p class="text-gray-600">Sistem manajemen risiko DJBC. <strong>Jalur Merah:</strong> Pemeriksaan fisik dan dokumen. <strong>Jalur Kuning:</strong> Hanya pemeriksaan dokumen. <strong>Jalur Hijau:</strong> Tidak ada pemeriksaan, barang dapat langsung keluar.</p></div><div><h4 class="font-semibold text-gray-800">Kawasan Pabean</h4><p class="text-gray-600">Kawasan dengan batas-batas tertentu di pelabuhan laut, bandar udara, atau tempat lain yang ditetapkan untuk lalu lintas barang yang sepenuhnya berada di bawah pengawasan DJBC.</p></div><div><h4 class="font-semibold text-gray-800">Lartas (Larangan dan Pembatasan)</h4><p class="text-gray-600">Barang-barang yang impornya dilarang atau dibatasi dan memerlukan perizinan khusus dari instansi teknis terkait sebelum dapat diimpor.</p></div><div><h4 class="font-semibold text-gray-800">Nilai Pabean</h4><p class="text-gray-600">Nilai transaksi dari barang impor yang digunakan sebagai dasar untuk menghitung bea masuk. Umumnya menggunakan metode CIF (Cost, Insurance, Freight).</p></div><div><h4 class="font-semibold text-gray-800">Nota Pembetulan (Notul)</h4><p class="text-gray-600">Dokumen yang diterbitkan oleh Pejabat Bea Cukai untuk mengoreksi data pada PIB yang menyebabkan kekurangan atau kelebihan pembayaran pungutan negara.</p></div><div><h4 class="font-semibold text-gray-800">Pemberitahuan Ekspor Barang (PEB)</h4><p class="text-gray-600">Dokumen pabean yang digunakan untuk memberitahukan pelaksanaan ekspor barang.</p></div><div><h4 class="font-semibold text-gray-800">Pemberitahuan Impor Barang (PIB)</h4><p class="text-gray-600">Dokumen pemberitahuan yang diajukan oleh importir kepada kantor bea cukai atas barang yang diimpor, berisi detail barang, nilai, dan data lain yang menjadi dasar perhitungan pungutan negara.</p></div>`, "en": `<div><h4 class="font-semibold text-gray-800">Importer Identification Number (API)</h4><p class="text-gray-600">An identification number that must be owned by every company conducting import activities.</p></div><div><h4 class="font-semibold text-gray-800">Customs Area</h4><p class="text-gray-600">The territory of the Republic of Indonesia which includes land, waters, and airspace above it, as well as certain places in the Exclusive Economic Zone and continental shelf where the Customs Law applies.</p></div><div><h4 class="font-semibold text-gray-800">De Minimis Value</h4><p class="text-gray-600">The customs value limit for shipped goods that are granted an exemption from import duty. Currently set at FOB USD 3 per shipment.</p></div><div><h4 class="font-semibold text-gray-800">HS Code (Harmonized System Code)</h4><p class="text-gray-600">An internationally used system for classifying goods to identify products. The HS Code determines the import duty rate for a good.</p></div><div><h4 class="font-semibold text-gray-800">Red, Yellow, Green Lanes</h4><p class="text-gray-600">DJBC's risk management system. <strong>Red Lane:</strong> Physical and document inspection. <strong>Yellow Lane:</strong> Document inspection only. <strong>Green Lane:</strong> No inspection, goods can be released immediately.</p></div><div><h4 class="font-semibold text-gray-800">Customs Zone</h4><p class="text-gray-600">An area with specific boundaries at a seaport, airport, or other designated place for the traffic of goods that is entirely under the supervision of DJBC.</p></div><div><h4 class="font-semibold text-gray-800">Prohibitions and Restrictions (Lartas)</h4><p class="text-gray-600">Goods whose import is prohibited or restricted and require special permits from relevant technical agencies before they can be imported.</p></div><div><h4 class="font-semibold text-gray-800">Customs Value</h4><p class="text-gray-600">The transaction value of imported goods used as the basis for calculating import duty. Generally uses the CIF (Cost, Insurance, Freight) method.</p></div><div><h4 class="font-semibold text-gray-800">Correction Note (Notul)</h4><p class="text-gray-600">A document issued by a Customs Officer to correct data in the PIB that results in an underpayment or overpayment of state levies.</p></div><div><h4 class="font-semibold text-gray-800">Export Declaration (PEB)</h4><p class="text-gray-600">A customs document used to declare the export of goods.</p></div><div><h4 class="font-semibold text-gray-800">Import Declaration (PIB)</h4><p class="text-gray-600">A declaration document submitted by an importer to the customs office for imported goods, containing details of the goods, value, and other data that form the basis for calculating state levies.</p></div>`}
+    "quiz_title": {"id": "Kuis Pabean", "en": "Customs Quiz"},
+    "quiz_intro": {"id": "Uji pengetahuan Anda tentang berbagai aspek kepabeanan. Pilih salah satu kategori di bawah ini untuk memulai.", "en": "Test your knowledge on various customs aspects. Choose a category below to start."},
+    "btn_back_to_menu": {"id": "Kembali ke Menu", "en": "Back to Menu"},
+    "quiz_result_title": {"id": "Hasil Kuis", "en": "Quiz Results"},
+    "quiz_score_label": {"id": "Skor Anda:", "en": "Your Score:"},
+    "btn_submit_quiz": {"id": "Kumpulkan Jawaban", "en": "Submit Answers"},
+    "quiz_cat_1_title": {"id": "UU Kepabeanan", "en": "Customs Law"},
+    "quiz_cat_1_desc": {"id": "60 Soal Pilihan Ganda mengenai UU No. 17 Tahun 2006.", "en": "60 Multiple Choice questions about Law No. 17 of 2006."},
+    "quiz_cat_2_title": {"id": "Pengeluaran Barang Impor", "en": "Release of Imported Goods"},
+    "quiz_cat_2_desc": {"id": "60 Soal Pilihan Ganda mengenai PMK 190/2022 & PER-2/BC/2023.", "en": "60 Multiple Choice questions about PMK 190/2022 & PER-2/BC/2023."},
+    "quiz_cat_3_title": {"id": "Nilai Pabean", "en": "Customs Value"},
+    "quiz_cat_3_desc": {"id": "60 Soal Pilihan Ganda mengenai PMK 144/2022.", "en": "60 Multiple Choice questions about PMK 144/2022."},
+    "quiz_cat_4_title": {"id": "Impor Barang Kiriman", "en": "Import of Shipped Goods"},
+    "quiz_cat_4_desc": {"id": "60 Soal Pilihan Ganda mengenai impor melalui PJT.", "en": "60 Multiple Choice questions about import via couriers."},
+    "quiz_cat_5_title": {"id": "Tatalaksana Ekspor", "en": "Export Procedures"},
+    "quiz_cat_5_desc": {"id": "60 Soal Pilihan Ganda mengenai PMK 155/2022.", "en": "60 Multiple Choice questions about PMK 155/2022."},
+    "quiz_cat_6_title": {"id": "Tempat Penimbunan Berikat", "en": "Bonded Storage Places"},
+    "quiz_cat_6_desc": {"id": "60 Soal Pilihan Ganda mengenai KB, GB, PLB, dll.", "en": "60 Multiple Choice questions about KB, GB, PLB, etc."},
+    "quiz_cat_7_title": {"id": "Fasilitas Kepabeanan", "en": "Customs Facilities"},
+    "quiz_cat_7_desc": {"id": "60 Soal Pilihan Ganda mengenai KITE, AEO, MITA, dll.", "en": "60 Multiple Choice questions about KITE, AEO, MITA, etc."},
+    "quiz_cat_8_title": {"id": "Soal Hitungan", "en": "Calculation Problems"},
+    "quiz_cat_8_desc": {"id": "10 Soal Esai mengenai perhitungan nilai pabean, BM, dan PDRI.", "en": "10 Essay problems on calculating customs value, duties, and taxes."},
+    "quiz_cat_9_title": {"id": "Klasifikasi Barang", "en": "Goods Classification"},
+    "quiz_cat_9_desc": {"id": "10 Soal Esai mengenai penetapan HS Code.", "en": "10 Essay problems on determining HS Code."}
+};
+
+// --- QUIZ DATA ---
+const quizData = {
+    cat1: {
+        type: 'mcq',
+        questions: [
+            { q: "Wilayah Indonesia yang di dalamnya berlaku UU Kepabeanan disebut...", a: ["Daerah Pabean", "Kawasan Pabean", "Zona Ekonomi Eksklusif", "Landas Kontinen"], correct: 0 },
+            { q: "Audit Kepabeanan dilakukan oleh...", a: ["Pejabat Bea dan Cukai", "Direktorat Jenderal Pajak", "Unit Audit Internal DJBC", "Auditor Eksternal"], correct: 2 },
+        ]
+    },
+    cat2: {
+        type: 'mcq',
+        questions: [
+            { q: "Dokumen yang digunakan untuk pengeluaran barang impor untuk dipakai adalah...", a: ["PEB", "PIB", "BC 2.3", "BC 4.0"], correct: 1 },
+        ]
+    },
+    cat3: {
+        type: 'mcq',
+        questions: [
+            { q: "Metode utama yang digunakan untuk menetapkan nilai pabean adalah...", a: ["Metode Deduksi", "Metode Komputasi", "Nilai Transaksi", "Metode Fallback"], correct: 2 },
+        ]
+    },
+    cat4: {
+        type: 'mcq',
+        questions: [
+            { q: "Batas nilai pembebasan bea masuk untuk barang kiriman per kiriman saat ini adalah...", a: ["FOB USD 3", "FOB USD 75", "FOB USD 500", "FOB USD 1500"], correct: 0 },
+        ]
+    },
+    cat5: {
+        type: 'mcq',
+        questions: [
+            { q: "Pemberitahuan pabean ekspor disampaikan melalui dokumen...", a: ["PIB", "PEB", "BC 3.0", "Nota Pelayanan Ekspor"], correct: 1 },
+        ]
+    },
+    cat6: {
+        type: 'mcq',
+        questions: [
+            { q: "Tempat penimbunan untuk mengolah barang yang hasilnya terutama untuk diekspor adalah...", a: ["Gudang Berikat", "Pusat Logistik Berikat", "Kawasan Berikat", "Toko Bebas Bea"], correct: 2 },
+        ]
+    },
+    cat7: {
+        type: 'mcq',
+        questions: [
+            { q: "Fasilitas pembebasan bea masuk atas impor bahan baku untuk tujuan ekspor dikenal sebagai...", a: ["AEO", "MITA", "KITE", "Kawasan Bebas"], correct: 2 },
+        ]
+    },
+    cat8: {
+        type: 'essay',
+        questions: [
+            { q: "Importir PT. Jaya mengimpor 100 unit mesin dari Jerman dengan harga FOB EUR 1,000 per unit. Biaya asuransi adalah 0.5% dari nilai FOB dan biaya angkut (freight) adalah EUR 2,000. Kurs yang ditetapkan Menteri Keuangan adalah 1 EUR = Rp 17,000. Tarif Bea Masuk adalah 10%. Hitunglah Nilai Pabean dan Bea Masuk yang harus dibayar!", modelAnswer: "1. Hitung Total FOB: 100 unit * EUR 1,000 = EUR 100,000.\n2. Hitung Insurance: 0.5% * EUR 100,000 = EUR 500.\n3. Hitung CIF (Cost, Insurance, Freight): EUR 100,000 + EUR 500 + EUR 2,000 = EUR 102,500.\n4. Hitung Nilai Pabean (NP): EUR 102,500 * Rp 17,000 = Rp 1,742,500,000.\n5. Hitung Bea Masuk (BM): 10% * Rp 1,742,500,000 = Rp 174,250,000. Pembulatan PIB: Rp 174,250,000." },
+        ]
+    },
+    cat9: {
+        type: 'essay',
+        questions: [
+            { q: "Sebuah perusahaan mengimpor 'smartphone' yang memiliki fungsi telepon, akses internet, kamera, dan GPS. Jelaskan pertimbangan Anda dalam menetapkan HS Code untuk barang tersebut dan sebutkan pos yang paling mungkin.", modelAnswer: "Berdasarkan Ketentuan Umum Menginterpretasi Harmonized System (KUMHS) nomor 3(a), pos yang memberikan uraian paling spesifik harus lebih diutamakan. Namun, smartphone adalah barang multifungsi. KUMHS 3(c) menyatakan jika tidak dapat diklasifikasikan dengan 3(a) atau 3(b), barang harus diklasifikasikan dalam pos yang muncul terakhir dalam urutan numerik di antara pos-pos yang punya pertimbangan yang sama. Fungsi utamanya adalah sebagai 'Aparatus telepon untuk jaringan seluler'. Oleh karena itu, HS Code yang paling mungkin adalah 8517.13.00 (Telepon untuk jaringan seluler atau untuk jaringan nirkabel lainnya - Telepon pintar)." },
+        ]
+    }
 };
 
 // --- NAVIGATION ---
@@ -338,6 +512,10 @@ function showPage(pageId) {
     
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
     document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`).classList.add('active');
+    
+    if (pageId === 'kuis') {
+        returnToQuizMenu();
+    }
 }
 
 // --- LANGUAGE SWITCHER ---
@@ -356,10 +534,12 @@ function setLanguage(lang) {
         document.getElementById('lang-en').classList.add('active');
         document.getElementById('lang-id').classList.remove('active');
     }
+    // Re-populate quiz menu on language change
+    populateQuizMenu();
 }
 
 
-// --- CALCULATOR LOGIC ---
+// --- CALCULATOR LOGIC (Existing) ---
 document.addEventListener('DOMContentLoaded', function() {
     const itemsContainer = document.getElementById('items-container');
     const addItemBtn = document.getElementById('add-item-btn');
@@ -408,9 +588,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.querySelectorAll('.number-input').forEach(addNumberFormatting);
     
-    createItemRow();
-    addItemBtn.addEventListener('click', createItemRow);
+    if(addItemBtn) {
+        createItemRow();
+        addItemBtn.addEventListener('click', createItemRow);
+    }
+    
     setLanguage('id'); // Set default language
+    populateQuizMenu(); // Populate quiz menu on initial load
 });
 
 
@@ -753,6 +937,144 @@ function downloadFile(content, fileName, mimeType) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+// --- QUIZ FUNCTIONS ---
+let currentQuizCategory = null;
+
+function populateQuizMenu() {
+    const grid = document.getElementById('quiz-category-grid');
+    grid.innerHTML = '';
+    const lang = document.documentElement.lang || 'id';
+
+    for (let i = 1; i <= 9; i++) {
+        const catKey = `cat${i}`;
+        const titleKey = `quiz_cat_${i}_title`;
+        const descKey = `quiz_cat_${i}_desc`;
+        
+        const title = translations[titleKey] ? translations[titleKey][lang] : `Category ${i}`;
+        const description = translations[descKey] ? translations[descKey][lang] : `Description for category ${i}`;
+
+        const card = document.createElement('div');
+        card.className = 'quiz-category-card';
+        card.onclick = () => startQuiz(catKey);
+        card.innerHTML = `
+            <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
+            <p class="text-gray-500">${description}</p>
+        `;
+        grid.appendChild(card);
+    }
+}
+
+function startQuiz(categoryKey) {
+    currentQuizCategory = categoryKey;
+    const quiz = quizData[categoryKey];
+    const lang = document.documentElement.lang || 'id';
+    
+    document.getElementById('quiz-menu').classList.add('hidden');
+    document.getElementById('quiz-results-container').classList.add('hidden');
+    
+    const quizContainer = document.getElementById('quiz-container');
+    const questionsContainer = document.getElementById('quiz-questions-container');
+    const titleEl = document.getElementById('quiz-header-title');
+    const submitBtn = document.getElementById('submit-quiz-btn');
+    
+    titleEl.textContent = translations[`quiz_cat_${categoryKey.substring(3)}_title`][lang];
+    submitBtn.textContent = translations['btn_submit_quiz'][lang];
+    questionsContainer.innerHTML = '';
+
+    quiz.questions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'quiz-question';
+        questionDiv.innerHTML = `<p class="font-semibold text-lg mb-4">${index + 1}. ${q.q}</p>`;
+
+        if (quiz.type === 'mcq') {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'quiz-options space-y-2';
+            const shuffledOptions = [...q.a].map(value => ({ value, sort: Math.random() })).sort((a, b) => a.sort - b.sort).map(({ value }) => value);
+
+            shuffledOptions.forEach(option => {
+                optionsDiv.innerHTML += `
+                    <label>
+                        <input type="radio" name="q${index}" value="${option}">
+                        <span>${option}</span>
+                    </label>
+                `;
+            });
+            questionDiv.appendChild(optionsDiv);
+        } else if (quiz.type === 'essay') {
+            questionDiv.innerHTML += `
+                <textarea class="input-field essay-answer" placeholder="Ketik jawaban Anda di sini..."></textarea>
+                <div class="model-answer hidden">
+                    <h4 class="font-bold mb-2">Kunci Jawaban:</h4>
+                    <p>${q.modelAnswer.replace(/\n/g, '<br>')}</p>
+                </div>
+            `;
+        }
+        questionsContainer.appendChild(questionDiv);
+    });
+
+    submitBtn.onclick = submitQuiz;
+    quizContainer.classList.remove('hidden');
+}
+
+function submitQuiz() {
+    const quiz = quizData[currentQuizCategory];
+    const questions = document.querySelectorAll('#quiz-questions-container .quiz-question');
+    
+    if (quiz.type === 'mcq') {
+        let score = 0;
+        questions.forEach((qEl, index) => {
+            const originalQuestion = quiz.questions[index];
+            const correctAnswer = originalQuestion.a[originalQuestion.correct];
+            const selectedRadio = qEl.querySelector('input[type="radio"]:checked');
+            
+            qEl.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                const span = label.querySelector('span');
+                
+                // Disable all radios after submission
+                radio.disabled = true;
+                
+                // Highlight correct answer
+                if (span.textContent === correctAnswer) {
+                    label.classList.add('correct-answer');
+                }
+                
+                // Check if user selected this option
+                if (radio.checked) {
+                    if (span.textContent === correctAnswer) {
+                        score++;
+                    } else {
+                        label.classList.add('wrong-answer');
+                    }
+                }
+            });
+        });
+        showMCQResults(score, questions.length);
+    } else if (quiz.type === 'essay') {
+        questions.forEach(qEl => {
+            qEl.querySelector('textarea').disabled = true;
+            qEl.querySelector('.model-answer').classList.remove('hidden');
+        });
+        document.getElementById('submit-quiz-btn').classList.add('hidden');
+    }
+}
+
+function showMCQResults(score, total) {
+    document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('quiz-results-container').classList.remove('hidden');
+    
+    const percentage = Math.round((score / total) * 100);
+    document.getElementById('quiz-score').textContent = `${percentage}%`;
+    document.getElementById('quiz-summary').textContent = `Anda menjawab dengan benar ${score} dari ${total} soal.`;
+}
+
+function returnToQuizMenu() {
+    document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('quiz-results-container').classList.add('hidden');
+    document.getElementById('quiz-menu').classList.remove('hidden');
+    document.getElementById('submit-quiz-btn').classList.remove('hidden');
 }
 
 </script>
