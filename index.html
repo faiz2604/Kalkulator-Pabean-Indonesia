@@ -214,6 +214,8 @@
         table { width: 100%; margin-top: 1rem; border-collapse: collapse; }
         th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #E5E7EB; vertical-align: middle; }
         thead th { background-color: #F9FAFB; font-weight: 600; color: #374151; }
+        tbody tr.group-header td { background-color: #e0e7ff; font-weight: 700; color: #1e3a8a; border-top: 2px solid #a5b4fc;}
+        tbody td.highlight { background-color: #fee2e2; font-weight: 500; }
         tfoot td { 
             font-weight: 700;
             background-image: linear-gradient(to right, #dbeafe, #e0e7ff);
@@ -321,6 +323,7 @@
             <!-- Navigation -->
             <nav class="bg-white/0 mt-4 flex flex-wrap gap-2 justify-center">
                 <a class="nav-link active" onclick="showPage('kalkulator', this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.5 2A1.5 1.5 0 004 3.5v13A1.5 1.5 0 005.5 18h9a1.5 1.5 0 001.5-1.5v-13A1.5 1.5 0 0014.5 2h-9zM5 3.5a.5.5 0 01.5-.5h9a.5.5 0 01.5.5v13a.5.5 0 01-.5.5h-9a.5.5 0 01-.5-.5v-13z" clip-rule="evenodd" /><path d="M6.75 6a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" /><path d="M6.75 9.5a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5h-3.5z" /></svg><span data-lang-key="nav_calculators">Kalkulator</span></a>
+                <a class="nav-link" onclick="showPage('kode-unifikasi', this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 4a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm3.5 1.5a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5zM5.5 9a.75.75 0 000 1.5h.5a.75.75 0 000-1.5h-.5zM6.25 12a.75.75 0 01.75-.75h.5a.75.75 0 010 1.5h-.5a.75.75 0 01-.75-.75zM8.5 9a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5zm0 3a.75.75 0 000 1.5h5a.75.75 0 000-1.5h-5z" clip-rule="evenodd" /></svg><span data-lang-key="nav_unification_code">Kode Unifikasi</span></a>
                 <a class="nav-link" onclick="showPage('alur-impor', this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.7a.75.75 0 00-1.06 1.06l3.25 3.25a.75.75 0 001.06 0l3.25-3.25a.75.75 0 10-1.06-1.06L10.75 11.34V6.75z" clip-rule="evenodd" /></svg><span data-lang-key="nav_import_flow">Alur Impor</span></a>
                 <a class="nav-link" onclick="showPage('alur-ekspor', this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-4.75a.75.75 0 001.5 0V8.66l1.97 1.97a.75.75 0 101.06-1.06l-3.25-3.25a.75.75 0 00-1.06 0L6.24 9.57a.75.75 0 001.06 1.06L9.25 8.66v4.59z" clip-rule="evenodd" /></svg><span data-lang-key="nav_export_flow">Alur Ekspor</span></a>
                 <a class="nav-link" onclick="showPage('kuota-impor', this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm3.5 4.5a.75.75 0 00-1.5 0v5.5a.75.75 0 001.5 0v-5.5zM9.25 6a.75.75 0 00-1.5 0v8a.75.75 0 001.5 0v-8zm3.5.75a.75.75 0 011.5 0v5.5a.75.75 0 01-1.5 0v-5.5z" clip-rule="evenodd" /></svg><span data-lang-key="nav_import_quota">Kuota Impor</span></a>
@@ -379,6 +382,63 @@
                 </div>
                 <div class="section-card"><h2 data-lang-key="kalkulator_sanksi_title">Kalkulator Sanksi Administrasi</h2><div class="card-content"><div id="sanksi-placeholder" class="text-center p-8 bg-gray-100 rounded-lg"><p class="text-gray-600 font-medium" data-lang-key="sanksi_placeholder">Lengkapi dan hitung detail PIB di atas terlebih dahulu untuk mengaktifkan kalkulator sanksi.</p></div><div id="sanksi-content" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-x-6"><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-pelanggaran" data-lang-key="label_error_type">Jenis Kesalahan</label><select id="sanksi-jenis-pelanggaran" class="input-field !text-left" onchange="toggleSanksiInput()"><option value="nilai_pabean" data-lang-key="error_type_value">Kesalahan Nilai Pabean</option><option value="tarif" data-lang-key="error_type_rate">Kesalahan Tarif</option></select></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="sanksi-jenis-importir" data-lang-key="label_importer_type">Jenis Importir</label><select id="sanksi-jenis-importir" class="input-field !text-left"><option value="umum" data-lang-key="importer_type_general">Importir Umum</option><option value="fasilitas" data-lang-key="importer_type_facility">Importir Fasilitas (AEO/MITA/Kawasan Berikat/KITE)*</option></select></div></div><div class="overflow-x-auto"><table id="sanksi-input-table"><thead></thead><tbody id="sanksi-items-container"></tbody></table></div><p class="text-xs text-gray-500 mt-2 mb-4" data-lang-key="sanksi_note">*Skema denda berjenjang akan diterapkan otomatis sesuai aturan.</p><button onclick="calculateSanksi()" class="btn btn-primary" data-lang-key="btn_calculate_sanction">Hitung Sanksi</button><div id="sanksi-result-container" class="mt-4 space-y-2 hidden"><div class="result-display"><span data-lang-key="sanksi_result_paid">Total BM Dibayar</span>: <span id="sanksi-total-bm-dibayar"></span></div><div class="result-display"><span data-lang-key="sanksi_result_should_be">Total BM Seharusnya</span>: <span id="sanksi-total-bm-seharusnya"></span></div><div class="result-display"><span data-lang-key="sanksi_result_shortage">Kekurangan Pembayaran BM</span>: <span id="sanksi-result-kurang"></span></div><div class="result-display"><span data-lang-key="sanksi_result_percentage">Persentase Kekurangan</span>: <span id="sanksi-result-persen"></span></div><div class="result-display"><span data-lang-key="sanksi_result_applicable_rate">Tarif Denda Berlaku</span>: <span id="sanksi-result-tarif"></span></div><div class="result-display bg-red-100 text-red-800"><strong data-lang-key="sanksi_result_total_fine">Total Denda</strong>: <span id="sanksi-result-denda"></span></div><div class="flex flex-wrap gap-4 mt-4"><button onclick="exportSanksi('xlsx')" class="btn btn-export" data-lang-key="btn_export_excel">Export ke Excel</button><button onclick="exportSanksi('csv')" class="btn btn-export" data-lang-key="btn_export_csv">Export ke CSV</button></div></div></div></div></div>
                 <div class="section-card"><h2>Kalkulator Impor Sementara</h2><div class="card-content"><p data-lang-key="temp_import_desc">Simulasikan pembayaran untuk impor sementara. Masukkan total pungutan yang seharusnya dibayar jika impor biasa, dan jangka waktu penggunaan.</p><div class="grid grid-cols-1 md:grid-cols-2 gap-x-6"><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-bm" data-lang-key="label_total_bm_should_be">Total Bea Masuk Seharusnya (Rp)</label><input type="text" id="is-bm" class="input-field number-input" placeholder="18.462.500" inputmode="numeric"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-ppn" data-lang-key="label_total_vat_should_be">Total PPN Seharusnya (Rp)</label><input type="text" id="is-ppn" class="input-field number-input" placeholder="25.240.875" inputmode="numeric"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-pph" data-lang-key="label_total_pph_should_be">Total PPh 22 Seharusnya (Rp)</label><input type="text" id="is-pph" class="input-field number-input" placeholder="5.736.563" inputmode="numeric"></div><div class="input-group"><label class="block text-sm font-medium text-gray-700 mb-1" for="is-jw" data-lang-key="label_period_months">Jangka Waktu (Bulan)</label><input type="number" id="is-jw" class="input-field" placeholder="12" inputmode="numeric"></div></div><button onclick="calculateImporSementara()" class="btn btn-primary" data-lang-key="btn_calculate_temp_import">Hitung Impor Sementara</button><div id="is-result-container" class="mt-4 space-y-2 hidden"><div class="result-display"><span data-lang-key="temp_import_total_levies">Total Pungutan Seharusnya</span>: <span id="is-total-pungutan"></span></div><div class="result-display"><span data-lang-key="temp_import_monthly_payment">Pembayaran per Bulan (2%)</span>: <span id="is-per-bulan"></span></div><div class="result-display bg-blue-100 text-blue-800"><strong data-lang-key="temp_import_total_payment">Total Bayar Impor Sementara</strong>: <span id="is-total-bayar"></span></div></div></div></div>
+            </div>
+
+            <!-- Kode Unifikasi Page -->
+            <div id="kode-unifikasi" class="page-content">
+                <div class="section-card">
+                    <h2 data-lang-key="unification_code_title">Kode Unifikasi Pemberitahuan Pabean</h2>
+                    <div class="card-content content-wrapper">
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Kelompok Dokumen</th>
+                                        <th>Declarant</th>
+                                        <th>Kode</th>
+                                        <th>Uraian Jenis Dokumen</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="group-header"><td colspan="4">Pemberitahuan Pabean Dalam Rangka Pengangkutan</td></tr>
+                                    <tr><td>Pengangkutan</td><td>Pengangkut</td><td>BC 1.0</td><td>RKSP / JKSP (Rencana Kedatangan Sarana Pengangkut / Jadwal Kedatangan Sarana Pengangkut)</td></tr>
+                                    <tr><td>Pengangkutan</td><td>Pengangkut</td><td>BC 1.1</td><td>Inward / Outward Manifest</td></tr>
+                                    <tr><td>Pengangkutan</td><td>Pengangkut</td><td>BC 1.2</td><td>PP Dari Kaw.Pab./Utk Diangkut Ke TPS di Kaw.Pab. Lainnya</td></tr>
+                                    <tr><td>Pengangkutan</td><td>Pengangkut</td><td>BC 1.3</td><td>PP Brg Asal DP dr Satu Tempat ke Tempat Lain Melalui LDP</td></tr>
+                                    <tr><td>Pengangkutan</td><td>Pengangkut</td><td>BC 1.6</td><td>PP Penimbunan dr Kawasan Pabean ke PLB</td></tr>
+
+                                    <tr class="group-header"><td colspan="4">Pemberitahuan Pabean Dalam Rangka Impor Barang</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td class="highlight">BC 2.0</td><td class="highlight">Pemberitahuan Impor Barang (PIB)</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.1</td><td>Pemberitahuan Impor Barang Khusus (PIBK)</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.2</td><td>Pemb. Barang Pribadi Penumpang dan Awak S/P (CD - Customs Declaration)</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.3</td><td>Pemberitahuan Impor Barang untuk Ditimbun di TPB</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.4</td><td>Pemb.Penyelesaian Barang Asal Impor yang Mendapat KITE</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.5</td><td>Pemberitahuan Impor Barang dari Tempat Penimbunan Berikat</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.6.1</td><td>Pemb.Pengeluaran Barang dari TPB Dengan Jaminan</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.6.2</td><td>Pemb.Pemasukan Kembali Barang dari TPB dengan Jaminan</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.7</td><td>Pemb.Pengel.Barang untuk Diangkut dari TPB ke TPB lainnya</td></tr>
+                                    <tr><td>Impor</td><td>Importir / PPJK</td><td>BC 2.8</td><td>Pemberitahuan Impor Barang dari PLB</td></tr>
+
+                                    <tr class="group-header"><td colspan="4">Pemberitahuan Pabean Dalam Rangka Ekspor Barang</td></tr>
+                                    <tr><td>Ekspor</td><td>Eksportir / PPJK</td><td class="highlight">BC 3.0</td><td class="highlight">Pemberitahuan Ekspor Barang (PEB)</td></tr>
+                                    <tr><td>Ekspor</td><td>Eksportir / PPJK</td><td>BC 3.2</td><td>Pemberitahuan Pembawaan Uang Tunai ke LDP (dari BI)</td></tr>
+
+                                    <tr class="group-header"><td colspan="4">PP dlm rgk Pemasukan Barang Dari TLDP ke Tempat di P-was DJBC</td></tr>
+                                    <tr><td>Pemasukan dari TLDP</td><td>Orang yg memasukkan brg</td><td>BC 4.0</td><td>Pemb.Pemasukan Brg Asal TLDP Ke TPB</td></tr>
+                                    <tr><td>Pemasukan dari TLDP</td><td>Orang yg memasukkan brg</td><td>BC 4.1</td><td>Pemb.Pengeluaran Kembali Brg Asal TLDP Dari TPB</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="content-section mt-8">
+                            <h4>Pemberitahuan Pabean Lainnya</h4>
+                            <ul>
+                                <li><strong>Consignment Note (CN):</strong> PP Impor Barang Kiriman</li>
+                                <li><strong>PP FTZ-01 s/d PP FTZ-03:</strong> Dok.Pemb.Pabean utk KPBPB (FTZ)</li>
+                                <li><strong>PPLB:</strong> Dok.Pemb.Pabean utk Lintas Batas (Land-Border)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Alur Impor Page -->
@@ -459,6 +519,7 @@
 const translations = {
     "portal_title": {"id": "Portal Informasi Kepabeanan Indonesia", "en": "Indonesian Customs Information Portal"},
     "nav_calculators": {"id": "Kalkulator", "en": "Calculators"},
+    "nav_unification_code": {"id": "Kode Unifikasi", "en": "Unification Code"},
     "nav_import_flow": {"id": "Alur Impor", "en": "Import Flow"},
     "nav_export_flow": {"id": "Alur Ekspor", "en": "Export Flow"},
     "nav_import_quota": {"id": "Kuota Impor", "en": "Import Quota"},
@@ -468,6 +529,7 @@ const translations = {
     "nav_glossary": {"id": "Glosarium", "en": "Glossary"},
     "nav_quiz": {"id": "Kuis Pabean", "en": "Customs Quiz"},
     "kalkulator_pib_title": {"id": "Kalkulator PIB (Termasuk Bea Masuk Anti Dumping)", "en": "Import Declaration Calculator (incl. Anti-Dumping Duty)"},
+    "unification_code_title": {"id": "Kode Unifikasi Pemberitahuan Pabean", "en": "Customs Notification Unification Code"},
     "pib_guidance_summary": {"id": "Tampilkan Petunjuk Pengisian", "en": "Show Filling Instructions"},
     "pib_guidance_content": {"id": `<p><strong>Total Insurance:</strong> Masukkan total biaya asuransi pengiriman barang dari luar negeri.</p><p><strong>Total Freight:</strong> Masukkan total biaya pengangkutan/pengiriman barang (ongkos kirim).</p><p><strong>Total Royalty & Lisensi:</strong> Biaya yang harus dibayar sebagai syarat penjualan barang impor (jika ada).</p><p><strong>Total Garansi:</strong> Biaya penggantian atau perbaikan yang ditanggung pembeli (jika ada).</p><p><strong>Total Diskon:</strong> Potongan harga yang didapat dari total nilai barang.</p><p><strong>Cost Barang:</strong> Masukkan harga per-item/per-jenis barang sesuai invoice.</p><p><strong>Tarif BM & BMAD:</strong> Masukkan tarif Bea Masuk dan Bea Masuk Anti Dumping dalam persen (%). Isi 0 jika tidak ada.</p>`, "en": `<p><strong>Total Insurance:</strong> Enter the total insurance cost for shipping the goods from abroad.</p><p><strong>Total Freight:</strong> Enter the total freight cost for shipping the goods.</p><p><strong>Total Royalty & License:</strong> Fees that must be paid as a condition of the sale of imported goods (if any).</p><p><strong>Total Warranty:</strong> Cost of replacement or repair borne by the buyer (if any).</p><p><strong>Total Discount:</strong> Price reduction obtained from the total value of the goods.</p><p><strong>Item Cost:</strong> Enter the price per item/type of goods according to the invoice.</p><p><strong>ID & ADD Tariff:</strong> Enter the Import Duty and Anti-Dumping Duty tariffs in percent (%). Enter 0 if none.</p>`},
     "label_pib_number": {"id": "Nomor PIB", "en": "Import Declaration No."},
